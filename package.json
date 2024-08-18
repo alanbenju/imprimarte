@@ -6,11 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "npx browserslist@latest --update-db"
   },
   "engines": {
     "node": "20.x"
-  },
+  },  
   "dependencies": {
     "@fontsource/poppins": "^5.0.15",
     "@mapbox/node-pre-gyp": "^1.0.11",

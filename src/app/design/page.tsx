@@ -1,10 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { Stage, Layer, Image as KonvaImage, Rect, Transformer } from "react-konva";
-import Konva from "konva";
-
-import useImage from "use-image";
+import React, {useState } from "react";
 import { UploadedFile } from "./types";
 import ShirtComponent from "./ShirtComponent";
 
