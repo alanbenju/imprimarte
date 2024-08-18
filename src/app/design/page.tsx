@@ -1,18 +1,18 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import { Stage, Layer, Image as KonvaImage, Rect, Transformer } from 'react-konva';
-import Konva from 'konva';
+import React, { useEffect, useRef, useState } from "react";
+import { Stage, Layer, Image as KonvaImage, Rect, Transformer } from "react-konva";
+import Konva from "konva";
 
-import useImage from 'use-image';
-import { UploadedFile } from './types';
-import ShirtComponent from './ShirtComponent';
+import useImage from "use-image";
+import { UploadedFile } from "./types";
+import ShirtComponent from "./ShirtComponent";
 
 const initialUploadedFile: UploadedFile = {
-  url: '',
+  url: "",
   width: 100,
   height: 100,
-  id: '1',
+  id: "1",
   x: 1,
   y: 1,
   isDragging: false
@@ -22,8 +22,8 @@ const DesignPage = () => {
 
   const [uploadedFile, setUploadedFile] = useState<UploadedFile>(initialUploadedFile);
 
-  const [selectedColor, setSelectedColor] = useState<string>('Negro');
-  const [selectedSize, setSelectedSize] = useState<string>('M');
+  const [selectedColor, setSelectedColor] = useState<string>("Negro");
+  const [selectedSize, setSelectedSize] = useState<string>("M");
   const [quantity, setQuantity] = useState<number>(1);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +39,7 @@ const DesignPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row items-center justify-center">
+    <div className="flex min-h-screen flex-col items-center justify-center md:flex-row">
       {/* Left Side: Image */}
       <ShirtComponent
         selectedColor={selectedColor}
@@ -49,15 +49,15 @@ const DesignPage = () => {
 
       {/* Right Side: Customization Options */}
       <div className="flex-1 p-8">
-        <div className="bg-white p-8 rounded-lg shadow-lg">
+        <div className="rounded-lg bg-white p-8 shadow-lg">
           <div className="mb-6 justify-start">
             <label
               htmlFor="uploadFile1"
-              className="bg-white text-gray-500 font-semibold text-base rounded max-w-md h-52 flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed mx-auto font-[sans-serif]"
+              className="mx-auto flex h-52 max-w-md cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed border-gray-300 bg-white font-[sans-serif] text-base font-semibold text-gray-500"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-11 mb-2 fill-gray-500"
+                className="mb-2 w-11 fill-gray-500"
                 viewBox="0 0 32 32"
               >
                 <path
@@ -75,7 +75,7 @@ const DesignPage = () => {
                 onChange={handleFileUpload}
                 className="hidden"
               />
-              <p className="text-xs font-medium text-gray-400 mt-2">
+              <p className="mt-2 text-xs font-medium text-gray-400">
                 PNG, JPG, SVG, WEBP, and GIF are allowed.
               </p>
             </label>
@@ -84,12 +84,12 @@ const DesignPage = () => {
             <label className="block text-sm font-medium text-gray-700">Color</label>
             <div className="mt-2 flex space-x-4">
               <button
-                onClick={() => setSelectedColor('Negro')}
-                className={`w-16 h-16 px-6 py-3 rounded-md border bg-black ${selectedColor === 'Negro' ? 'border-4 border-yellow-400 text-black' : 'border-gray-300'} hover:border-gray-500 hover:shadow-lg transition-all duration-150`}
+                onClick={() => setSelectedColor("Negro")}
+                className={`size-16 rounded-md border bg-black px-6 py-3 ${selectedColor === "Negro" ? "border-4 border-yellow-400 text-black" : "border-gray-300"} transition-all duration-150 hover:border-gray-500 hover:shadow-lg`}
               >              </button>
               <button
-                onClick={() => setSelectedColor('Blanco')}
-                className={`w-16 h-16 px-6 py-3 rounded-md border bg-white ${selectedColor === 'Blanco' ? 'border-4 border-yellow-400 bg-white text-black' : 'border-gray-300'} hover:border-gray-500 hover:shadow-lg transition-all duration-150`}
+                onClick={() => setSelectedColor("Blanco")}
+                className={`size-16 rounded-md border bg-white px-6 py-3 ${selectedColor === "Blanco" ? "border-4 border-yellow-400 bg-white text-black" : "border-gray-300"} transition-all duration-150 hover:border-gray-500 hover:shadow-lg`}
               >
               </button>
             </div>
@@ -100,7 +100,7 @@ const DesignPage = () => {
             <select
               value={selectedSize}
               onChange={(e) => setSelectedSize(e.target.value)}
-              className="mt-2 block w-full text-lg text-gray-900 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 hover:border-gray-500 hover:shadow-lg transition-all duration-150 px-4 py-3"
+              className="mt-2 block w-full rounded-md border border-gray-300 px-4 py-3 text-lg text-gray-900 transition-all duration-150 hover:border-gray-500 hover:shadow-lg focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
             >
               <option value="XS">XS</option>
               <option value="S">S</option>
@@ -117,13 +117,13 @@ const DesignPage = () => {
               min="1"
               value={quantity}
               onChange={(e) => setQuantity(parseInt(e.target.value))}
-              className="mt-2 block w-full text-lg text-gray-900 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 hover:border-gray-500 hover:shadow-lg transition-all duration-150 px-4 py-3"
+              className="mt-2 block w-full rounded-md border border-gray-300 px-4 py-3 text-lg text-gray-900 transition-all duration-150 hover:border-gray-500 hover:shadow-lg focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
             />
           </div>
 
           <div className="mt-8">
             <button
-              className="w-full bg-green-600 text-white py-4 px-6 rounded-md text-lg font-semibold shadow-lg hover:bg-green-700 transition-all duration-150"
+              className="w-full rounded-md bg-green-600 px-6 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-150 hover:bg-green-700"
             >
               Agregar Al Carrito
             </button>

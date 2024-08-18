@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
-import { Stage, Layer, Image as KonvaImage, Transformer, Rect } from 'react-konva';
-import useImage from 'use-image';
-import { UploadedFile } from './types';
-import Konva from 'konva';
+import React, { useRef, useState } from "react";
+import { Stage, Layer, Image as KonvaImage, Transformer, Rect } from "react-konva";
+import useImage from "use-image";
+import { UploadedFile } from "./types";
+import Konva from "konva";
 
 export type ShirtComponentProps = {
     selectedColor: string;
@@ -24,11 +24,11 @@ function adjustImageSize(fileW: number, fileH: number, rectWidth: number, rectHe
 }
 
 const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtComponentProps) => {
-    const [tShirtImageBlack] = useImage('/remera-regular-black.png');
-    const [tShirtImageWhite] = useImage('/remera-regular-white.png');
-    const [selectedImage] = useImage(uploadedFile.url || '');
+    const [tShirtImageBlack] = useImage("/remera-regular-black.png");
+    const [tShirtImageWhite] = useImage("/remera-regular-white.png");
+    const [selectedImage] = useImage(uploadedFile.url || "");
 
-    const tShirtImage = selectedColor === 'Negro' ? tShirtImageBlack : tShirtImageWhite;
+    const tShirtImage = selectedColor === "Negro" ? tShirtImageBlack : tShirtImageWhite;
 
     // Original shirt image dimensions and scaling
     const shirtWidth = 1267;
@@ -72,8 +72,8 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
     });
 
     return (
-        <div className="flex-1 p-8 max-w-2xl">
-            <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+        <div className="max-w-2xl flex-1 p-8">
+            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
                 <Stage width={stageWidth} height={stageHeight}>
                     <Layer>
                         <KonvaImage
@@ -88,7 +88,7 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
                             y={rectY}
                             width={rectW}
                             height={rectH}
-                            stroke={selectedColor === 'Black' ? 'white' : 'black'}
+                            stroke={selectedColor === "Black" ? "white" : "black"}
                             strokeWidth={2}
                             dash={[10, 5]}
                             ref={rectRef}  // Attach the ref here
@@ -123,10 +123,20 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
                                         console.log({
                                             x: node?.x(),
                                             y: node?.y(),
+                                            w: node?.width(),
+                                            h: node?.height(),
                                             // set minimal value
                                             width: Math.max(5, node?.width() || 1 * (scaleX || 1)),
                                             height: Math.max(node?.height() || 1 * (scaleY || 1)),
                                         });
+                                        setUploadedFile({
+                                            ...uploadedFile,
+                                            //x: node?.x(),
+                                            //y: node?.y(),
+                                            // set minimal value
+                                            width: Math.max(5, node?.width() || 1 * (scaleX || 1)),
+                                            height: Math.max(node?.height() || 1 * (scaleY || 1)),                                        });
+
                                     }}
                                     dragBoundFunc={(pos) => {
                                         if (rectRef.current) {
@@ -153,7 +163,7 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
                                     rotateEnabled={false}
                                     rotateLineVisible={false}
                                     keepRatio={true}  // Maintain aspect ratio during scaling
-                                    enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
+                                    enabledAnchors={["top-left", "top-right", "bottom-left", "bottom-right"]}
                                     boundBoxFunc={(oldBox, newBox) => {
                                         // limit resize
                                         const aspectRatio = oldBox.width / oldBox.height;
