@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="56px" height="56px" viewBox="0 0 56 56" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Artboard Copy 2</title>
+    <defs>
+        <polygon id="path-1" points="29.9166665 34.1427497 36.0451664 37.8416664 34.4188331 30.8702498 39.833333 26.1796665 32.7032498 25.5747499 29.9166665 19 27.1300832 25.5747499 20 26.1796665 25.4144999 30.8702498 23.7881666 37.8416664"></polygon>
+    </defs>
+    <g id="Artboard-Copy-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/56x56/Placement">
+            <polygon id="Path" fill-opacity="0.01" fill="#FFFFFF" points="0 0 56 0 56 56 0 56"></polygon>
+            <rect id="Rectangle" stroke="#222222" stroke-width="2" fill="#D8D8D8" stroke-linejoin="round" x="10" y="9" width="29" height="29"></rect>
+            <rect id="Rectangle-Copy-6" stroke="#222222" stroke-width="2" fill="#FFFFFF" stroke-linejoin="round" x="17" y="15" width="26" height="26" rx="3"></rect>
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="Mask" fill="#222222" xlink:href="#path-1"></use>
+            <path d="M39.4880147,50.6706573 C38.9325163,50.9431138 38.2659183,50.7047143 38.0103891,50.1370965 L35.5884163,44.7560792 L32.7998146,47.0492553 C32.6109452,47.2081883 32.3776359,47.2990072 32.1109967,47.2990072 C31.4974102,47.2990072 31,46.7907448 31,46.1637715 L31,29.1352357 C31,28.5082623 31.4974102,28 32.1109967,28 C32.3776359,28 32.6442751,28.0908189 32.8331445,28.2497519 L45.5984965,39.1934242 C46.076225,39.602109 46.1317749,40.3173075 45.742926,40.7941065 C45.5762765,40.998449 45.3429672,41.1346772 45.1096579,41.1800867 L41.5989084,41.8839328 L44.0431011,47.2535978 C44.3319602,47.8212156 44.065321,48.4910047 43.5098227,48.7521089 L39.4880147,50.6706573 Z" id="Path" stroke="#222222" stroke-width="2" fill="#FFFFFF"></path>
+        </g>
+    </g>
+</svg>

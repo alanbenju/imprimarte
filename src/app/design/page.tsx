@@ -96,6 +96,7 @@ const DesignPage = () => {
   const rectW = stageWidth - 290;
   const rectH = stageHeight - 420;
   const { width, height } = adjustImageSize(uploadedFile.width, uploadedFile.height, rectW, rectH);
+console.log({width, height})
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center">

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="56px" height="57px" viewBox="0 0 56 57" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon 56x56</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="pf-landing-privy-partnership" transform="translate(-161.000000, -1340.000000)">
+            <g id="Features-list-vertical/2-With-56x56-icon/0-Desktop" transform="translate(0.000000, 1082.000000)">
+                <g id="Group-13" transform="translate(161.000000, 150.000000)">
+                    <g id="Icon-56x56" transform="translate(0.000000, 108.530966)">
+                        <g id="icons">
+                            <polygon id="Path" points="0 0 56 0 56 56 0 56"></polygon>
+                        </g>
+                        <g id="09d1bd72936cd1f0414361768bcc717d" transform="translate(7.000000, 9.000000)" fill-rule="nonzero" stroke-width="2">
+                            <path d="M9.528,35.472 L33.378,35.472 L33.378,15.422 C33.378,15.232 33.568,14.945 33.662,14.848 C33.852,14.658 34.137,14.658 34.328,14.754 L39.078,16.377 L42.213,7.593 L30.336,0.719 L26.726,0.719 C26.252,3.296 24.066,5.206 21.405,5.206 C18.745,5.206 16.559,3.201 16.179,0.623 L12.569,0.623 L0.69,7.497 L3.826,16.186 L8.576,14.563 C8.766,14.467 9.052,14.467 9.242,14.658 C9.432,14.848 9.527,15.04 9.527,15.231 L9.527,35.472 L9.528,35.472 Z" id="Path" stroke="#222222" fill="#FFFFFF"></path>
+                            <polygon id="Path" stroke="#221E1F" fill="#D8D8D8" points="12.5 35.25 6.916 38.186 7.982 31.968 3.465 27.564 9.708 26.657 12.5 21 15.292 26.657 21.535 27.564 17.018 31.968 18.084 38.186"></polygon>
+                        </g>
+                        <polygon id="Path" points="0 0 56 0 56 56 0 56"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
