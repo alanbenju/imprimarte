@@ -1,22 +1,14 @@
 "use client";
 
-import React, { useRef, useState } from 'react';
-import { Stage, Layer, Image as KonvaImage, Rect } from 'react-konva';
+import React, { useEffect, useRef, useState } from 'react';
+import { Stage, Layer, Image as KonvaImage, Rect, Transformer } from 'react-konva';
 import Konva from 'konva';
 
 import useImage from 'use-image';
+import { UploadedFile } from './types';
+import ShirtComponent from './ShirtComponent';
 
-type uploadedFile = {
-  url: string;
-  width: number;
-  height: number;
-  id: string;
-  x: number;
-  y: number;
-  isDragging: boolean
-
-}
-const initialUploadedFile: uploadedFile = {
+const initialUploadedFile: UploadedFile = {
   url: '',
   width: 100,
   height: 100,
@@ -26,33 +18,13 @@ const initialUploadedFile: uploadedFile = {
   isDragging: false
 }
 
-
-function adjustImageSize(fileW:number, fileH:number, rectWidth:number, rectHeight:number) {
-  console.log({fileW, fileH, rectWidth, rectHeight})
-
-  if (fileW > rectWidth || fileH > rectHeight) {
-    const widthScale = rectWidth / fileW;
-    const heightScale = rectHeight / fileH;
-    const scaleFactor = Math.min(widthScale, heightScale);
-
-    // Apply the scale factor
-    fileW *= scaleFactor;
-    fileH *= scaleFactor;
-  }
-
-  return { width: fileW, height:fileH };
-}
-
-
 const DesignPage = () => {
 
-  const [uploadedFile, setUploadedFile] = useState<uploadedFile>(initialUploadedFile);
+  const [uploadedFile, setUploadedFile] = useState<UploadedFile>(initialUploadedFile);
 
-  const [selectedColor, setSelectedColor] = useState<string>('Black');
+  const [selectedColor, setSelectedColor] = useState<string>('Negro');
   const [selectedSize, setSelectedSize] = useState<string>('M');
   const [quantity, setQuantity] = useState<number>(1);
-
-  const [tshirtImage] = useImage('/remera-regular-black.png');
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -66,104 +38,14 @@ const DesignPage = () => {
     }
   };
 
-
-  const [selectedImage] = useImage(uploadedFile.url || '')
-
-  const handleDragStart = (e: any) => {
-    setUploadedFile({
-      ...uploadedFile,
-      isDragging: true
-    })
-  };
-  const handleDragEnd = (e: any) => {
-    setUploadedFile({
-      ...uploadedFile,
-      isDragging: false
-    })
-  };
-
-  // Original shirt image dimensions
-  const shirtWidth = 1267;
-  const shirtHeight = 1900;
-
-  const scaleFactor = 0.4;
-
-  // Calculate the scaled dimensions for stage
-  const stageWidth = shirtWidth * scaleFactor;
-  const stageHeight = shirtHeight * scaleFactor;
-
-  const rectRef = useRef<Konva.Rect>(null); 
-  const rectW = stageWidth - 290;
-  const rectH = stageHeight - 420;
-  const { width, height } = adjustImageSize(uploadedFile.width, uploadedFile.height, rectW, rectH);
-console.log({width, height})
-
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center">
       {/* Left Side: Image */}
-      <div className="flex-1 p-8 max-w-2xl">  {/* Smaller container */}
-        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-          <Stage width={stageWidth} height={stageHeight}>
-            <Layer>
-              <KonvaImage
-                image={tshirtImage}
-                x={0}
-                y={0}
-                width={stageWidth}
-                height={stageHeight}
-                draggable={false}
-              />
-
-              {/* Boundary Line for Draggable Area */}
-              <Rect
-                ref={rectRef}  // Attach the ref here
-                x={150}  // Start at the top-left corner of the t-shirt
-                y={240}
-                width={rectW}  // Subtracting draggable image width
-                height={rectH}  // Subtracting draggable image height
-                stroke="white"
-                strokeWidth={2}
-                dash={[10, 5]}  // Create a dashed line effect
-              />
-
-
-              <KonvaImage
-                key={uploadedFile.id}
-                id={uploadedFile.id}
-                x={rectRef.current?.x()}
-                y={rectRef.current?.y()}
-                draggable
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-                image={selectedImage}
-                width={width}
-                height={height}
-                stroke={'white'}
-                strokeWidth={1}
-                dragBoundFunc={(pos) => {
-                  if (rectRef.current) {
-                    const rect = rectRef.current;
-                    const minX = rect.x();
-                    const maxX = rect.x() + rect.width() - width; // 100 is the width of the draggable image
-                    const minY = rect.y();
-                    const maxY = rect.y() + rect.height() - height; // 100 is the height of the draggable image
-
-                    const newX = Math.max(minX, Math.min(pos.x, maxX));
-                    const newY = Math.max(minY, Math.min(pos.y, maxY));
-
-                    return {
-                      x: newX,
-                      y: newY,
-                    };
-                  }
-                  return pos;
-                }}
-              />
-            </Layer>
-          </Stage>
-        </div>
-
-      </div>
+      <ShirtComponent
+        selectedColor={selectedColor}
+        uploadedFile={uploadedFile}
+        setUploadedFile={setUploadedFile}
+      />
 
       {/* Right Side: Customization Options */}
       <div className="flex-1 p-8">
@@ -203,15 +85,12 @@ console.log({width, height})
             <div className="mt-2 flex space-x-4">
               <button
                 onClick={() => setSelectedColor('Negro')}
-                className={`px-6 py-3 rounded-md border ${selectedColor === 'Negro' ? 'border-black bg-white text-black' : 'border-gray-300'} hover:border-gray-500 hover:shadow-lg transition-all duration-150`}
-              >
-                Negro
-              </button>
+                className={`w-16 h-16 px-6 py-3 rounded-md border bg-black ${selectedColor === 'Negro' ? 'border-4 border-yellow-400 text-black' : 'border-gray-300'} hover:border-gray-500 hover:shadow-lg transition-all duration-150`}
+              >              </button>
               <button
                 onClick={() => setSelectedColor('Blanco')}
-                className={`px-6 py-3 rounded-md border ${selectedColor === 'Blanco' ? 'border-black bg-white text-black' : 'border-gray-300'} hover:border-gray-500 hover:shadow-lg transition-all duration-150`}
+                className={`w-16 h-16 px-6 py-3 rounded-md border bg-white ${selectedColor === 'Blanco' ? 'border-4 border-yellow-400 bg-white text-black' : 'border-gray-300'} hover:border-gray-500 hover:shadow-lg transition-all duration-150`}
               >
-                Blanco
               </button>
             </div>
           </div>
