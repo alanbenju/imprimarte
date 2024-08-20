@@ -109,36 +109,51 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
                                     height={height}
                                     isSelected
                                     onTransformEnd={(e) => {
-                                        // transformer is changing scale of the node
-                                        // and NOT its width or height
-                                        // but in the store we have only width and height
-                                        // to match the data better we will reset scale on transform end
                                         const node = imageRef.current;
-                                        const scaleX = node?.scaleX();
-                                        const scaleY = node?.scaleY();
-
-                                        // we will reset it back
-                                        node?.scaleX(1);
-                                        node?.scaleY(1);
-                                        console.log({
-                                            x: node?.x(),
-                                            y: node?.y(),
-                                            w: node?.width(),
-                                            h: node?.height(),
-                                            // set minimal value
-                                            width: Math.max(5, node?.width() || 1 * (scaleX || 1)),
-                                            height: Math.max(node?.height() || 1 * (scaleY || 1)),
-                                        });
-                                        setUploadedFile({
-                                            ...uploadedFile,
-                                            //x: node?.x(),
-                                            //y: node?.y(),
-                                            // set minimal value
-                                            width: Math.max(5, node?.width() || 1 * (scaleX || 1)),
-                                            height: Math.max(node?.height() || 1 * (scaleY || 1)),                                        });
-
+                                        if (node) {
+                                            const scaleX = node.scaleX();
+                                            const scaleY = node.scaleY();
+                                    
+                                            // Calculate new dimensions
+                                            const newWidth = Math.max(5, node.width() * scaleX);
+                                            const newHeight = Math.max(5, node.height() * scaleY);
+                                    
+                                            // Reset the scale to 1
+                                            node.scaleX(1);
+                                            node.scaleY(1);
+                                    
+                                            // Calculate potential new position
+                                            let newX = node.x();
+                                            let newY = node.y();
+                                    
+                                            // Adjust if out of bounds
+                                            if (newX + newWidth > rectX + rectW) {
+                                                newX = rectX + rectW - newWidth;
+                                            }
+                                            if (newX < rectX) {
+                                                newX = rectX;
+                                            }
+                                            if (newY + newHeight > rectY + rectH) {
+                                                newY = rectY + rectH - newHeight;
+                                            }
+                                            if (newY < rectY) {
+                                                newY = rectY;
+                                            }
+                                    
+                                            // Update the state with the new dimensions and position
+                                            setUploadedFile({
+                                                ...uploadedFile,
+                                                width: newWidth,
+                                                height: newHeight,
+                                                x: newX,
+                                                y: newY,
+                                            });
+                                    
+                                            // Apply the new position
+                                            node.position({ x: newX, y: newY });
+                                        }
                                     }}
-                                    dragBoundFunc={(pos) => {
+                                                                        dragBoundFunc={(pos) => {
                                         if (rectRef.current) {
                                             const rect = rectRef.current;
                                             const minX = rect.x();
