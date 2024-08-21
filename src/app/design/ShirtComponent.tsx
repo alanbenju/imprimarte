@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Stage, Layer, Image as KonvaImage, Transformer, Rect } from "react-konva";
+import { Stage, Layer, Image as KonvaImage, Transformer, Rect, Text } from "react-konva";
 import useImage from "use-image";
 import { UploadedFile } from "./types";
 import Konva from "konva";
@@ -36,13 +36,16 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
     const scaleFactor = 0.4;
     const stageWidth = shirtWidth * scaleFactor;
     const stageHeight = shirtHeight * scaleFactor;
-
-    // Calculate the rect size and position
-    const rectX = 170;
-    const rectY = 230;
-    const rectW = stageWidth - 330;
-    const rectH = stageHeight - 420;
-
+    
+    const currentRectW = 32;
+    const currentRectH = 60;
+    const newRectW = 30;
+    const newRectH = 42;
+    
+    const rectX = 176;
+    const rectY = 260;
+    const rectW = (stageWidth - 330) * (newRectW / currentRectW); // Calculate new width
+    const rectH = (stageHeight - 420) * (newRectH / currentRectH); // Calculate new height    
     // Adjust image size
     const { width, height } = adjustImageSize(uploadedFile.width, uploadedFile.height, rectW, rectH);
 
@@ -63,6 +66,41 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
     const rectRef = useRef<Konva.Rect>(null);
     const imageRef = useRef<Konva.Image>(null);
     const trRef = useRef<Konva.Transformer>(null);
+    const stageRef = useRef<Konva.Stage>(null);
+
+    const exportToImage = () => {
+        if (trRef.current) {
+            // Hide transformer before exporting
+            trRef.current.nodes([]);
+        }
+
+        if (stageRef.current) {
+            const dataURL = stageRef.current.toDataURL({
+                x: rectRef.current?.x(),
+                y: rectRef.current?.y(),
+                width: rectRef.current?.width(),
+                height: rectRef.current?.height(),
+                pixelRatio: 2, // Increase pixel ratio for better quality
+            });
+            downloadURI(dataURL, "shirt-design.png");
+        }
+
+        // Restore transformer
+        setTimeout(() => {
+            if (imageRef.current) {
+                trRef.current?.nodes([imageRef.current]);
+            }
+        }, 50);
+    };
+
+    const downloadURI = (uri: string, name: string) => {
+        const link = document.createElement("a");
+        link.download = name;
+        link.href = uri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     React.useEffect(() => {
         if (imageRef.current && trRef.current) {
@@ -73,8 +111,14 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
 
     return (
         <div className="max-w-2xl flex-1 p-8">
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                <Stage width={stageWidth} height={stageHeight}>
+            <div className="rounded-lg border bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 p-4 shadow-lg">
+                <button
+                    onClick={exportToImage}
+                    className="mt-4 rounded bg-gradient-to-r from-blue-500 to-blue-700 px-4 py-2 text-white shadow transition-transform hover:scale-105"
+                >
+                    Export Image
+                </button>
+                <Stage width={stageWidth} height={stageHeight} ref={stageRef}>
                     <Layer>
                         <KonvaImage
                             image={tShirtImage}
@@ -88,10 +132,25 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
                             y={rectY}
                             width={rectW}
                             height={rectH}
-                            stroke={selectedColor === "Black" ? "white" : "black"}
+                            stroke={selectedColor === "Negro" ? "white" : "black"}
                             strokeWidth={2}
                             dash={[10, 5]}
                             ref={rectRef}  // Attach the ref here
+                        />
+                        <Text
+                            x={rectX + rectW / 2 - 20}
+                            y={rectY - 20}
+                            text={"30 cm"}
+                            fontSize={16}
+                            fill={selectedColor === "Negro" ? "white" : "black"}
+                        />
+                        <Text
+                            x={rectX - 20}
+                            y={rectY + rectH / 1.7 }
+                            text={"42 cm"}
+                            fontSize={16}
+                            fill={selectedColor === "Negro" ? "white" : "black"}
+                            rotation={-90}
                         />
                         {selectedImage && (
                             <>
@@ -113,20 +172,16 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
                                         if (node) {
                                             const scaleX = node.scaleX();
                                             const scaleY = node.scaleY();
-                                    
-                                            // Calculate new dimensions
+    
                                             const newWidth = Math.max(5, node.width() * scaleX);
                                             const newHeight = Math.max(5, node.height() * scaleY);
-                                    
-                                            // Reset the scale to 1
+    
                                             node.scaleX(1);
                                             node.scaleY(1);
-                                    
-                                            // Calculate potential new position
+    
                                             let newX = node.x();
                                             let newY = node.y();
-                                    
-                                            // Adjust if out of bounds
+    
                                             if (newX + newWidth > rectX + rectW) {
                                                 newX = rectX + rectW - newWidth;
                                             }
@@ -139,8 +194,7 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
                                             if (newY < rectY) {
                                                 newY = rectY;
                                             }
-                                    
-                                            // Update the state with the new dimensions and position
+    
                                             setUploadedFile({
                                                 ...uploadedFile,
                                                 width: newWidth,
@@ -148,22 +202,21 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
                                                 x: newX,
                                                 y: newY,
                                             });
-                                    
-                                            // Apply the new position
+    
                                             node.position({ x: newX, y: newY });
                                         }
                                     }}
-                                                                        dragBoundFunc={(pos) => {
+                                    dragBoundFunc={(pos) => {
                                         if (rectRef.current) {
                                             const rect = rectRef.current;
                                             const minX = rect.x();
-                                            const maxX = rect.x() + rect.width() - width; // 100 is the width of the draggable image
+                                            const maxX = rect.x() + rect.width() - width;
                                             const minY = rect.y();
-                                            const maxY = rect.y() + rect.height() - height; // 100 is the height of the draggable image
-
+                                            const maxY = rect.y() + rect.height() - height;
+    
                                             const newX = Math.max(minX, Math.min(pos.x, maxX));
                                             const newY = Math.max(minY, Math.min(pos.y, maxY));
-
+    
                                             return {
                                                 x: newX,
                                                 y: newY,
@@ -177,30 +230,29 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
                                     flipEnabled={false}
                                     rotateEnabled={false}
                                     rotateLineVisible={false}
-                                    keepRatio={true}  // Maintain aspect ratio during scaling
+                                    keepRatio={true}
                                     enabledAnchors={["top-left", "top-right", "bottom-left", "bottom-right"]}
                                     boundBoxFunc={(oldBox, newBox) => {
-                                        // limit resize
                                         const aspectRatio = oldBox.width / oldBox.height;
-
+    
                                         if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
                                             return oldBox;
                                         }
                                         if (newBox.width / newBox.height !== aspectRatio) {
                                             newBox.width = newBox.height * aspectRatio;
                                         }
-
+    
                                         return newBox;
                                     }}
                                 />
                             </>
                         )}
-
+    
                     </Layer>
                 </Stage>
             </div>
         </div>
     );
-};
+    };
 
 export default ShirtComponent;

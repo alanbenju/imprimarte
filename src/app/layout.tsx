@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
+import { FaShoppingCart } from "react-icons/fa";  // Import the cart icon
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -28,8 +29,11 @@ export default function RootLayout({
               <Link href="/faq" className="text-gray-600 hover:text-gray-900">
                 FAQ
               </Link>
-              <Link href="/design" className="hover:bg-primary-dark rounded bg-primary px-4 py-2 font-semibold text-white transition duration-300">
+              <Link href="/design" className="rounded-md bg-green-600 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-150 hover:bg-green-700">
                 Diseña
+              </Link>
+              <Link href="/cart" className="relative">
+                <FaShoppingCart className="text-2xl text-gray-600 hover:text-gray-900" />
               </Link>
             </nav>
           </div>
