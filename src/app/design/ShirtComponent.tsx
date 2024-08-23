@@ -24,8 +24,8 @@ function adjustImageSize(fileW: number, fileH: number, rectWidth: number, rectHe
 }
 
 const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtComponentProps) => {
-    const [tShirtImageBlack] = useImage("/remera-regular-black.png");
-    const [tShirtImageWhite] = useImage("/remera-regular-white.png");
+    const [tShirtImageBlack] = useImage("/regular-fit/remera-regular-black.png");
+    const [tShirtImageWhite] = useImage("/regular-fit/remera-regular-white.png");
     const [selectedImage] = useImage(uploadedFile.url || "");
 
     const tShirtImage = selectedColor === "Negro" ? tShirtImageBlack : tShirtImageWhite;

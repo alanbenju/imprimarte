@@ -41,6 +41,14 @@ export default function SizeDetails() {
             <li>Sigue las instrucciones de medición detalladas anteriormente para medir tu prenda en las áreas de largo, ancho, sisa, hombro y manga.</li>
             <li>Compara tus medidas con nuestra tabla de tallas para encontrar el tamaño que más se asemeje a tu prenda favorita.</li>
           </ul>
+
+          <h3 className="text-xl font-semibold">Consejos Adicionales</h3>
+          <ul className="list-disc space-y-2 pl-5">
+            <li><b>Consistencia:</b> Asegúrate de que las prendas que comparas estén extendidas sobre una superficie plana y no estén estiradas ni deformadas.</li>
+            <li><b>Precisión:</b> Utiliza una cinta métrica flexible para tomar medidas más precisas.</li>
+            <li><b>Comparación:</b> Toma en cuenta el material y el ajuste de tu prenda de referencia al comparar con nuestras medidas. Algunos materiales pueden tener diferentes grados de elasticidad que afectan cómo se ajusta la prenda</li>
+          </ul>
+
   
           <div className="mt-6 flex justify-center">
             <img 

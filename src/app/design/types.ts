@@ -6,6 +6,11 @@ export type UploadedFile = {
     x: number;
     y: number;
     isDragging: boolean
-  
   }
   
+  export type Product = {
+    name: string;
+    size: string;
+    color: string;
+    price: string;
+  }

@@ -1,6 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useContext, useState } from "react";
+import SizeDetails from "./SizeDetails";
+import { CartContext } from "../contexts/CartContext";
+import { useRouter } from "next/navigation";
 
 type ShirtInputsProps = {
     selectedColor: string;
@@ -21,8 +24,41 @@ const ShirtInputsComponent: React.FC<ShirtInputsProps> = ({
     setQuantity,
     handleFileUpload,
 }) => {
+
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const { addToCart } = useContext(CartContext);
+    const router = useRouter(); // Inicializa useRouter
+
+
+    const openModal = () => setIsModalOpen(true)
+    const closeModal = () => setIsModalOpen(false)
+
+    const handleAddToCart = () => {
+        addToCart({
+            color: selectedColor,
+            quantity: 1,
+            id: "1",
+            name: "Remera Regular Fit",
+            price: "10000",
+            size: selectedSize,
+        });
+    };
+
+    const handleAddToCartAndBuy = () => {
+        addToCart({
+            color: selectedColor,
+            quantity: 1,
+            id: "1",
+            name: "Remera Regular Fit",
+            price: "10000",
+            size: selectedSize,
+        });
+        router.push('design/checkout')
+    };
+
+
     return (
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
             <div className="rounded-lg bg-white p-8 shadow-lg">
                 <div className="mb-6 justify-start">
                     <label
@@ -68,9 +104,7 @@ const ShirtInputsComponent: React.FC<ShirtInputsProps> = ({
                     </div>
                 </div>
 
-                {/* Quantity and Add to Cart Button Row */}
                 <div className="mb-6 flex items-center space-x-4">
-
                     <div className="flex flex-col items-start">
                         <label className="block text-sm font-medium text-gray-700">Tamaño</label>
                         <select
@@ -84,7 +118,6 @@ const ShirtInputsComponent: React.FC<ShirtInputsProps> = ({
                             <option value="L">L</option>
                             <option value="XL">XL</option>
                         </select>
-
                     </div>
 
                     <div className="flex flex-col items-start">
@@ -100,17 +133,57 @@ const ShirtInputsComponent: React.FC<ShirtInputsProps> = ({
                     <div className="mt-6 flex grow space-x-4">
                         <button
                             className="w-1/2 rounded-md bg-green-600 px-6 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-150 hover:bg-green-700"
+                            onClick={handleAddToCart}
                         >
                             Agregar Al Carrito
                         </button>
                         <button
                             className="w-1/2 rounded-md bg-red-600 px-6 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-150 hover:bg-orange-700"
+                            onClick={handleAddToCartAndBuy}
                         >
                             Comprar Ya
                         </button>
                     </div>
                 </div>
+                <a
+                    href="#"
+                    onClick={openModal}
+                    className="text-blue-600 hover:text-blue-800 hover:underline"
+                >
+                    Ver Guia de Talles
+                </a>
+
             </div>
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center p-4" id="my-modal">
+                    <div className="relative bg-white rounded-lg shadow-xl max-w-screen-md w-full max-h-[80vh] flex flex-col">
+                        {/* Close button (X) in the top right corner */}
+                        <button
+                            onClick={closeModal}
+                            className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                            aria-label="Close"
+                        >
+                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        <div className="p-6 overflow-y-auto flex-grow">
+                            <div className="mt-2 py-3">
+                                <SizeDetails></SizeDetails>
+                            </div>
+                            <div className="mt-4">
+                                <button
+                                    className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                    onClick={closeModal}
+                                >
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

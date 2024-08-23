@@ -37,25 +37,25 @@ const DesignPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center md:flex-row">
-      {/* Left Side: Image */}
-      <ShirtComponent
-        selectedColor={selectedColor}
-        uploadedFile={uploadedFile}
-        setUploadedFile={setUploadedFile}
-      />
+<div className="flex min-h-screen w-full">
+  <div className="flex w-full flex-col items-center justify-center md:flex-row">
+    <ShirtComponent
+      selectedColor={selectedColor}
+      uploadedFile={uploadedFile}
+      setUploadedFile={setUploadedFile}
+    />
 
-      <ShirtInputs
-        selectedColor={selectedColor}
-        setSelectedColor={setSelectedColor}
-        selectedSize={selectedSize}
-        setSelectedSize={setSelectedSize}
-        quantity={quantity}
-        setQuantity={setQuantity}
-        handleFileUpload={handleFileUpload}
-      />
-
-    </div>
+    <ShirtInputs
+      selectedColor={selectedColor}
+      setSelectedColor={setSelectedColor}
+      selectedSize={selectedSize}
+      setSelectedSize={setSelectedSize}
+      quantity={quantity}
+      setQuantity={setQuantity}
+      handleFileUpload={handleFileUpload}
+    />
+  </div>
+</div>
   );
 };
 
