@@ -4,33 +4,59 @@ import Link from "next/link";
 import { useContext } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import { CartContext } from "../contexts/CartContext";
+import { ShoppingBag } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export const Header = () => {
   const { getCart, toggleCart } = useContext(CartContext);
   const items = getCart().length;
+  const pathname = usePathname();
+
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
-    <header className="bg-white shadow-sm">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3">
-        <Link href="/" className="text-2xl font-bold text-primary">
-          Imprimarte
-        </Link>
-        <nav className="flex items-center space-x-4">
-          <Link href="/faq" className="text-gray-600 hover:text-gray-900">
-            FAQ
+    <header className="flex h-16 items-center bg-white px-4 shadow-md lg:px-6">
+      <div className="container mx-auto max-w-7xl">
+        <div className="flex items-center justify-between">
+          <Link className="flex items-center justify-center" href="/">
+            <ShoppingBag className="size-6 text-teal-600" />
+            <span className="ml-2 text-2xl font-bold text-teal-600">ImprimArte</span>
           </Link>
-          <Link href="/design" className="rounded-md bg-green-600 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-150 hover:bg-green-700">
-            Diseña
-          </Link>
-          <button onClick={toggleCart} className="relative">
-            <FaShoppingCart className="text-2xl text-gray-600 hover:text-gray-900" />
-            {items > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
-                {items}
-              </span>
-            )}
-          </button>
-        </nav>
+          <div className="flex items-center gap-4">
+            <nav className="flex gap-4 sm:gap-6">
+              {pathname === "/" && (
+                <>
+                  <a className="cursor-pointer text-sm font-medium transition-colors hover:text-teal-600" onClick={() => scrollToSection("how-it-works")}>
+                    Cómo Funciona
+                  </a>
+                  <a className="cursor-pointer text-sm font-medium transition-colors hover:text-teal-600" onClick={() => scrollToSection("products")}>
+                    Productos
+                  </a>
+                </>
+              )}
+              <a className="cursor-pointer text-sm font-medium transition-colors hover:text-teal-600" href="/faq">
+                FAQ
+              </a>
+            </nav>
+            <Link href="/design" className="rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-700">
+              Diseña ahora
+            </Link>
+            <button
+              onClick={toggleCart}
+              className="flex items-center justify-center rounded-full bg-teal-600 p-2 text-white hover:bg-teal-700"
+            >
+              <FaShoppingCart className="size-5" />
+              {items > 0 && (
+                <span className="ml-1 text-sm font-bold">{items}</span>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
     </header>
   );

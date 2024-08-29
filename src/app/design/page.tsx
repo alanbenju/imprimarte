@@ -112,7 +112,7 @@ const DesignPage = () => {
 
 
   return (
-    <div className="flex min-h-screen w-full flex-col md:flex-row">
+    <div className="flex min-h-screen w-full flex-col md:flex-row bg-gradient-to-r from-teal-600 via-teal-500 to-emerald-500">
       {loading && <Loader />} {/* Mostrar el loader si está cargando */}
 
       <div className="w-full p-4 md:w-1/2 md:min-w-[500px]">

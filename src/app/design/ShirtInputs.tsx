@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { useRouter } from "next/navigation";
 import { ColorOption, Product } from "./types";
+import { ShoppingCart } from "lucide-react";
 
 type ShirtInputsProps = {
     selectedColor: ColorOption;
@@ -168,7 +169,7 @@ const ShirtInputsComponent: React.FC<ShirtInputsProps> = ({
                             className="mt-2 block w-full rounded-md border border-gray-300 px-4 py-2 text-lg text-gray-900 transition-all duration-150 hover:border-gray-500 hover:shadow-lg focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:w-20"
                         />
                     </div>
-                    
+
                 </div>
                 <a
                     href="#"
@@ -180,14 +181,12 @@ const ShirtInputsComponent: React.FC<ShirtInputsProps> = ({
 
 
                 <div className="mt-6 flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-                    <button
-                        className="grow rounded-md bg-green-600 px-6 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-150 hover:bg-green-700"
-                        onClick={handleAddToCart}
-                    >
+                    <button className="flex flex-1 items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-teal-900 transition-colors hover:bg-amber-300">
+                        <ShoppingCart className="mr-2" onClick={handleAddToCart} />
                         Agregar Al Carrito
                     </button>
                     <button
-                        className="grow rounded-md bg-red-600 px-6 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-150 hover:bg-orange-700"
+                        className="flex-1 rounded-md bg-teal-600 px-4 py-2 text-white transition-colors hover:bg-teal-700"
                         onClick={handleAddToCartAndBuy}
                     >
                         Comprar Ya

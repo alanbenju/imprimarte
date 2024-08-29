@@ -31,8 +31,11 @@ export default function RootLayout({
                 {children}
               </main>
               <footer className="mt-auto bg-gray-100">
-                <div className="container mx-auto px-4 py-6 text-center text-gray-600">
-                  © 2024 Imprimarte. Todos los derechos reservados.
+                <div className="container mx-auto flex items-center justify-between px-4 py-6 text-gray-600">
+                  <span>© 2024 Imprimarte. Todos los derechos reservados.</span>
+                  <a href="mailto:imprimarte@gmail.com" className="text-sm hover:underline">
+                  imprimarte@gmail.com
+                  </a>
                 </div>
               </footer>
             </CartProvider>

@@ -4,6 +4,7 @@ import React, { useContext } from "react";
 import { CartContext } from "../contexts/CartContext";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { X, Minus, Plus, Trash2 } from "lucide-react";
 
 export const CartDrawer = () => {
   const { getCart, toggleCart, isCartOpen, getTotalPrice, updateCartItemQuantity, removeFromCart } = useContext(CartContext);
@@ -11,83 +12,85 @@ export const CartDrawer = () => {
 
   return (
     <div
-      className={`fixed right-0 top-0 size-full transform bg-white shadow-lg transition-transform duration-300 ease-in-out md:w-1/2 lg:w-1/3 xl:w-1/4 ${
+      className={`fixed right-0 top-0 h-full w-full transform bg-teal-50 shadow-lg transition-transform duration-300 ease-in-out sm:w-96 ${
         isCartOpen ? "translate-x-0" : "translate-x-full"
       } z-50`}
       style={{ overflowY: "auto" }}
     >
-      <div className="flex h-full flex-col p-4">
-        <button className="absolute right-4 top-4 text-gray-600" onClick={toggleCart} aria-label="Close cart">
-          ✕
-        </button>
-        <h2 className="mb-4 text-lg font-bold">Your Cart</h2>
-        <div className="grow overflow-y-auto">
+      <div className="flex h-full flex-col">
+        <div className="bg-gradient-to-r from-teal-600 to-emerald-600 p-4 text-white">
+          <button className="absolute right-4 top-4 text-white hover:text-amber-400 transition-colors" onClick={toggleCart} aria-label="Close cart">
+            <X size={24} />
+          </button>
+          <h2 className="text-xl font-bold">Tu Carrito</h2>
+        </div>
+        <div className="grow overflow-y-auto p-4">
           {getCart().map((item, index) => (
-            <div key={index} className="flex flex-col border-b p-4">
+            <div key={index} className="mb-4 rounded-lg bg-white p-4 shadow-md hover:shadow-lg transition-shadow">
               <div className="flex w-full space-x-2 mb-2">
                 <div className="w-1/2 aspect-square relative">
                   <Image
                     src={item.imageUrl}
-                    alt="Uploaded design"
+                    alt="Diseño cargado"
                     fill
-                    className="rounded border border-black object-cover"
+                    className="rounded object-cover"
                   />
                 </div>
                 <div className="w-1/2 aspect-square relative">
                   <Image
                     src={item.shirtImage}
-                    alt="Shirt preview"
+                    alt="Vista previa de la camiseta"
                     fill
-                    className="rounded border border-black object-cover"
+                    className="rounded object-cover"
                   />
                 </div>
               </div>
               <div className="flex flex-col justify-between">
                 <div>
-                  <p className="font-semibold">{item.name} - {item.color.toUpperCase()}</p>
-                  <p className="text-sm text-gray-600">Talle: {item.size}</p>
+                  <p className="font-semibold text-teal-800">{item.name} - {item.color.toUpperCase()}</p>
+                  <p className="text-sm text-teal-600">Talle: {item.size}</p>
                 </div>
-                <p className="font-bold">ARS {(item.quantity * item.price).toFixed(2)}</p>
-                <div className="flex items-center space-x-2">
+                <p className="font-bold text-teal-800 mt-2">ARS {(item.quantity * item.price).toFixed(2)}</p>
+                <div className="flex items-center justify-between mt-2">
+                  <div className="flex items-center space-x-2">
+                    <button
+                      className="rounded-full bg-amber-400 p-1 text-teal-800 hover:bg-amber-300 transition-colors"
+                      onClick={() => updateCartItemQuantity(item.id, Math.max(item.quantity - 1, 1))}
+                      aria-label="Disminuir cantidad"
+                    >
+                      <Minus size={16} />
+                    </button>
+                    <span className="font-medium text-teal-800">{item.quantity}</span>
+                    <button
+                      className="rounded-full bg-amber-400 p-1 text-teal-800 hover:bg-amber-300 transition-colors"
+                      onClick={() => updateCartItemQuantity(item.id, item.quantity + 1)}
+                      aria-label="Aumentar cantidad"
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
                   <button
-                    className="rounded bg-gray-200 px-2 py-1 text-sm"
-                    onClick={() => updateCartItemQuantity(item.id, Math.max(item.quantity - 1, 1))}
-                    aria-label="Decrease quantity"
+                    className="text-red-500 hover:text-red-700 transition-colors"
+                    onClick={() => removeFromCart(item.id)}
+                    aria-label="Eliminar artículo"
                   >
-                    -
-                  </button>
-                  <span>{item.quantity}</span>
-                  <button
-                    className="rounded bg-gray-200 px-2 py-1 text-sm"
-                    onClick={() => updateCartItemQuantity(item.id, item.quantity + 1)}
-                    aria-label="Increase quantity"
-                  >
-                    +
+                    <Trash2 size={20} />
                   </button>
                 </div>
-                <button
-                  className="self-end text-red-500 hover:text-red-700"
-                  onClick={() => removeFromCart(item.id)}
-                  aria-label="Remove item"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
               </div>
             </div>
           ))}
         </div>
-        <div className="mt-4 border-t pt-4">
-          <p className="mb-4 text-xl font-bold">Total: ARS {getTotalPrice().toFixed(2)}</p>
+        <div className="border-t border-teal-200 bg-white p-4">
+          <p className="mb-4 text-xl font-bold text-teal-800">Total: ARS {getTotalPrice().toFixed(2)}</p>
           <button
-            className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            className="w-full rounded bg-gradient-to-r from-teal-600 to-emerald-600 px-4 py-3 text-white font-semibold hover:from-teal-700 hover:to-emerald-700 transition-colors"
             onClick={() => {
               toggleCart();
               router.push("/checkout");
             }}
           >
-            Proceed to Checkout
+            Proceder al Pago
           </button>
         </div>
       </div>

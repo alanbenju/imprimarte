@@ -3,28 +3,29 @@
 import { useState } from "react"
 import { ChevronDownIcon } from "lucide-react"
 
-const FAQItem = ({ question, answer }: any) => {
+const FAQItem = ({ question, answer }: { question: string; answer: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className="border-b border-gray-200">
+    <div className="border-b border-teal-200">
       <button
         className="flex w-full items-center justify-between py-5 text-left"
         onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
       >
-        <span className="font-semibold text-gray-700">{question}</span>
+        <span className="font-semibold text-teal-800">{question}</span>
         <ChevronDownIcon
-          className={`size-5 text-gray-500 transition-transform duration-200${
+          className={`size-5 text-teal-600 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
           }`}
         />
       </button>
       <div
         className={`overflow-hidden transition-all duration-200 ${
-          isOpen ? "max-h-96" : "max-h-0"
+          isOpen ? "max-h-[1000px]" : "max-h-0"
         }`}
       >
-        <div className="pb-5 text-gray-600">{answer}</div>
+        <div className="pb-5 text-teal-700">{answer}</div>
       </div>
     </div>
   )
@@ -49,7 +50,7 @@ export default function Component() {
       question: "Pagos",
       answer: (
         <ul className="list-disc space-y-2 pl-5">
-          <li><span className="font-medium">Métodos:</span>Mercado Pago, tarjetas de crédito y débito.</li>
+          <li><span className="font-medium">Métodos:</span> Mercado Pago, tarjetas de crédito y débito.</li>
           <li><span className="font-medium">Acreditación:</span> 6 a 48 hs hábiles, con posibles demoras debido a procesamiento manual.</li>
         </ul>
       )
@@ -89,13 +90,17 @@ export default function Component() {
   ]
 
   return (
-    <div className="mx-auto w-full max-w-3xl overflow-hidden rounded-lg bg-white shadow-lg">
-      <div className="p-6">
-        <h2 className="mb-6 text-center text-2xl font-bold text-gray-800">Preguntas Frecuentes</h2>
-        <div className="space-y-4">
-          {faqs.map((faq, index) => (
-            <FAQItem key={index} question={faq.question} answer={faq.answer} />
-          ))}
+    <div className="min-h-screen bg-gradient-to-b from-teal-50 to-teal-100 py-12">
+      <div className="mx-auto w-full max-w-3xl overflow-hidden rounded-lg bg-white shadow-lg">
+        <div className="bg-gradient-to-r from-teal-600 to-emerald-600 p-6">
+          <h2 className="text-center text-3xl font-bold text-white">Preguntas Frecuentes</h2>
+        </div>
+        <div className="p-6">
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <FAQItem key={index} question={faq.question} answer={faq.answer} />
+            ))}
+          </div>
         </div>
       </div>
     </div>

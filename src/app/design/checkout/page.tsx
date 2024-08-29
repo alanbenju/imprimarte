@@ -2,7 +2,6 @@
 
 import React, { useState, useContext } from "react";
 import Image from "next/image";
-import { Product } from "../types";
 import { CartContext } from "@/app/contexts/CartContext";
 
 const Checkout = () => {
