@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import { CartProvider } from "./contexts/CartContext";
 import { Header } from "./design/Header";
 import { CartDrawer } from "./cart/CartDrawer";
-import './globals.css'; // Ensure this path is correct
+import "./globals.css"; // Ensure this path is correct
 import { UserProvider } from "./contexts/UserContext";
 import { ProductProvider } from "./contexts/ProductContext";
 
@@ -27,7 +27,7 @@ export default function RootLayout({
             <CartProvider>
               <Header />
               <CartDrawer /> {/* Ensure this is outside of the main content flow */}
-              <main className="mx-auto max-w-full relative">
+              <main className="relative mx-auto max-w-full">
                 {children}
               </main>
               <footer className="mt-auto bg-gray-100">

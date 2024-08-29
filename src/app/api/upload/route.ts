@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { storage } from './firebaseConfig'; // Adjust import path as needed
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { NextRequest, NextResponse } from "next/server";
+import { storage } from "./firebaseConfig"; // Adjust import path as needed
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<Response> {
   try {
     const formData = await req.formData();
-    const file = formData.get('file');
+    const file = formData.get("file");
 
-    if (!file || typeof file === 'string') {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    if (!file || typeof file === "string") {
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
     // Create a reference to the storage location
@@ -17,18 +17,18 @@ export async function POST(req: NextRequest) {
     // Use uploadBytesResumable to handle the file upload
     const uploadTask = uploadBytesResumable(storageRef, file);
 
-    return new Promise((resolve, reject) => {
+    return new Promise<Response>((resolve, reject) => {
       uploadTask.on(
-        'state_changed',
+        "state_changed",
         (snapshot) => {
           // Optional: Handle upload progress
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
+          console.log("Upload is " + progress + "% done");
         },
         (error) => {
           // Handle unsuccessful uploads
-          console.error('Upload failed:', error);
-          reject(NextResponse.json({ error: 'Upload failed' }, { status: 500 }));
+          console.error("Upload failed:", error);
+          reject(NextResponse.json({ error: "Upload failed" }, { status: 500 }));
         },
         async () => {
           // Upload completed successfully
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
       );
     });
   } catch (error) {
-    console.error('Error uploading file:', error);
-    return NextResponse.json({ error: 'Error uploading file' }, { status: 500 });
+    console.error("Error uploading file:", error);
+    return NextResponse.json({ error: "Error uploading file" }, { status: 500 });
   }
 }
