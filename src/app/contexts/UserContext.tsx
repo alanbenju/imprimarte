@@ -1,8 +1,8 @@
 // UserContext.tsx
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 // Define the structure of the User Context
 interface UserContextType {
@@ -20,11 +20,11 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   useEffect(() => {
     // Check if there's a user ID in localStorage
-    let storedUserId = localStorage.getItem('userId');
+    let storedUserId = localStorage.getItem("userId");
     if (!storedUserId) {
       // If not, generate a new user ID and store it
       storedUserId = uuidv4() as string;
-      localStorage.setItem('userId', storedUserId);
+      localStorage.setItem("userId", storedUserId);
     }
     setUserId(storedUserId);
   }, []);
@@ -40,7 +40,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 export const useUser = () => {
   const context = useContext(UserContext);
   if (context === undefined) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error("useUser must be used within a UserProvider");
   }
   return context;
 };
