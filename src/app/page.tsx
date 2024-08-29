@@ -21,7 +21,7 @@ const Home: FC = () => {
         <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center justify-between py-16 md:flex-row">
           <div className="flex-1">
             <h1 className="text-3xl font-bold text-white drop-shadow-lg md:text-5xl">
-              Creá y Comprá Remeras Personalizadas
+              Creá y Comprá Prendas Personalizadas
             </h1>
 
             {/* Diseño Vertical con Pasos Numerados */}

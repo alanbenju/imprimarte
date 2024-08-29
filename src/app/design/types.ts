@@ -7,10 +7,28 @@ export type UploadedFile = {
     y: number;
     isDragging: boolean
   }
-  
-  export type Product = {
-    name: string;
-    size: string;
+
+  export interface ColorOption {
     color: string;
-    price: string;
-  }
+    image: string;
+    availableSizes: string[];
+    sizesImages: string;
+    background: string;
+}
+
+export interface Product {
+    id: string;
+    name: string;
+    price: number;
+    colors: ColorOption[];
+    type: string;
+    previewImage: string;
+    sizeDetails: {
+        [key: string]: {
+            ancho: string;
+            largo: string;
+            hombro: string;
+            manga: string;
+        };
+    };
+}

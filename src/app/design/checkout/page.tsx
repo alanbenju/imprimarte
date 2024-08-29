@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-
-import axios from "axios";
+import React, { useState, useContext } from "react";
+import Image from "next/image";
 import { Product } from "../types";
+import { CartContext } from "@/app/contexts/CartContext";
 
-const Checkout = (products:Product[]) => {
+const Checkout = () => {
+  const { getCart, getTotalPrice } = useContext(CartContext);
   const [contactEmail, setContactEmail] = useState("");
-  const [shippingCost, setShippingCost] = useState(null);
   const [deliveryAddress, setDeliveryAddress] = useState({
     name: "",
     lastName: "",
@@ -30,55 +30,33 @@ const Checkout = (products:Product[]) => {
     phone: "",
   });
 
-  const calcularEnvio = async (codigoPostalDestino: string) => {
-    console.log("calcular envio")
-    const codigoPostalOrigen = "1405"; // Reemplaza esto con tu código postal de origen
-    const peso = 0.5; // Peso en kg
-    const volumen = 0.36; // Volumen en metros cúbicos
-
-    try {
-      const response = await axios.get("https://api.oca.com.ar/epaK/envios", {
-        params: {
-          Peso: peso,
-          Volumen: volumen,
-          CodigoPostalOrigen: codigoPostalOrigen,
-          CodigoPostalDestino: codigoPostalDestino,
-        },
-      });
-      setShippingCost(response.data.precio); // Ajusta esto según la estructura de la respuesta de la API de OCA
-    } catch (error) {
-      console.error("Error al calcular el envío:", error);
-      setShippingCost(null);
-    }
-  };
-
-  const handlePostalCodeChange = (e: any) => {
-    console.log("postal code change")
-    handleInputChange(e);
-    calcularEnvio(e.target.value);
-  };
-
-
-
-  const [selectedShipping, setSelectedShipping] = useState("");
-  const [selectedPayment, setSelectedPayment] = useState("");
+  const [selectedShipping, setSelectedShipping] = useState("privado");
+  const [selectedPayment, setSelectedPayment] = useState("mercadopago");
   const [useDifferentBillingAddress, setUseDifferentBillingAddress] = useState(false);
+
   const handleBillingInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setBillingAddress((prev) => ({ ...prev, [name]: value }));
   };
-
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setDeliveryAddress((prev) => ({ ...prev, [name]: value }));
   };
 
+  const shippingCostPrivado = 2500;
+  const shippingCostOca1 = 3464.31;
+  const shippingCostOca2 = 5333.55;
+
+  let selectedShippingCost = selectedShipping == "privado" ? shippingCostPrivado : 0;
+  selectedShippingCost = selectedShipping == "oca1" ? shippingCostOca1 : selectedShippingCost;
+  selectedShippingCost = selectedShipping == "oca2" ? shippingCostOca2 : selectedShippingCost;
+
 
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-gray-100">
-      <div className="max-w-4xl w-full bg-white p-6 rounded shadow-md">
+    <div className="flex min-h-screen flex-col-reverse justify-center bg-gray-100 p-8 md:flex-row">
+      <div className="w-full rounded bg-white p-6 shadow-md md:w-3/5">
         {/* Header */}
         {/* Contact Information */}
         <section className="mt-6">
@@ -88,7 +66,7 @@ const Checkout = (products:Product[]) => {
             value={contactEmail}
             onChange={(e) => setContactEmail(e.target.value)}
             placeholder="Correo electrónico"
-            className="mt-2 w-full border border-gray-300 p-2 rounded"
+            className="mt-2 w-full rounded border border-gray-300 p-2"
           />
           <div className="mt-2">
             <input type="checkbox" id="newsletter" />
@@ -101,14 +79,14 @@ const Checkout = (products:Product[]) => {
         {/* Delivery Information */}
         <section className="mt-6">
           <h2 className="text-lg font-semibold">Entrega</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <input
               type="text"
               name="name"
               value={deliveryAddress.name}
               onChange={handleInputChange}
               placeholder="Nombre"
-              className="border border-gray-300 p-2 rounded"
+              className="rounded border border-gray-300 p-2"
             />
             <input
               type="text"
@@ -116,7 +94,7 @@ const Checkout = (products:Product[]) => {
               value={deliveryAddress.lastName}
               onChange={handleInputChange}
               placeholder="Apellidos"
-              className="border border-gray-300 p-2 rounded"
+              className="rounded border border-gray-300 p-2"
             />
             <input
               type="text"
@@ -124,7 +102,7 @@ const Checkout = (products:Product[]) => {
               value={deliveryAddress.street}
               onChange={handleInputChange}
               placeholder="Calle y Altura"
-              className="md:col-span-2 border border-gray-300 p-2 rounded"
+              className="rounded border border-gray-300 p-2 md:col-span-2"
             />
             <input
               type="text"
@@ -132,7 +110,7 @@ const Checkout = (products:Product[]) => {
               value={deliveryAddress.apartment}
               onChange={handleInputChange}
               placeholder="Departamento, casa o indicación"
-              className="md:col-span-2 border border-gray-300 p-2 rounded"
+              className="rounded border border-gray-300 p-2 md:col-span-2"
             />
             <input
               type="text"
@@ -140,21 +118,21 @@ const Checkout = (products:Product[]) => {
               value={deliveryAddress.postalCode}
               onChange={handleInputChange}
               placeholder="Código Postal"
-              className="border border-gray-300 p-2 rounded"
+              className="rounded border border-gray-300 p-2"
             />
             <input
               type="text"
               name="city"
-              value={deliveryAddress.city}
+              defaultValue={deliveryAddress.city}
               placeholder="Ciudad"
-              className="border border-gray-300 p-2 rounded"
+              className="rounded border border-gray-300 p-2"
             />
             <input
               type="text"
               name="province"
-              value={deliveryAddress.province}
+              defaultValue={deliveryAddress.province}
               placeholder="Provincia/Estado"
-              className="border border-gray-300 p-2 rounded"
+              className="rounded border border-gray-300 p-2"
               disabled
             />
             <input
@@ -163,7 +141,7 @@ const Checkout = (products:Product[]) => {
               value={deliveryAddress.phone}
               onChange={handleInputChange}
               placeholder="Teléfono"
-              className="md:col-span-2 border border-gray-300 p-2 rounded"
+              className="rounded border border-gray-300 p-2 md:col-span-2"
             />
           </div>
         </section>
@@ -172,9 +150,12 @@ const Checkout = (products:Product[]) => {
         <section className="mt-6">
           <h2 className="text-lg font-semibold">Métodos de envío</h2>
           <div className="space-y-2">
-            <div className="border border-gray-300 p-4 rounded">
+            <div className="rounded border border-gray-300 p-4">
               <label className="flex items-center">
-                <input type="radio" name="shipping" className="mr-2"
+                <input
+                  type="radio"
+                  name="shipping"
+                  className="mr-2"
                   value="privado"
                   checked={selectedShipping === "privado"}
                   onChange={(e) => setSelectedShipping(e.target.value)}
@@ -185,36 +166,48 @@ const Checkout = (products:Product[]) => {
             </div>
             {selectedPayment !== "privado" && (
               <>
-                <div className="border border-gray-300 p-4 rounded">
+                <div className="rounded border border-gray-300 p-4">
                   <label className="flex items-center">
-                    <input type="radio" name="shipping" className="mr-2"
+                    <input
+                      type="radio"
+                      name="shipping"
+                      className="mr-2"
                       value="oca1"
                       checked={selectedShipping === "oca1"}
+                      onChange={(e) => setSelectedShipping(e.target.value)}
                     />
                     Retirar en Agencia Oficial (OCA) - $3,464.31
                   </label>
                 </div>
-                <div className="border border-gray-300 p-4 rounded">
+                <div className="rounded border border-gray-300 p-4">
                   <label className="flex items-center">
-                    <input type="radio" name="shipping" className="mr-2"
+                    <input
+                      type="radio"
+                      name="shipping"
+                      className="mr-2"
                       value="oca2"
                       checked={selectedShipping === "oca2"}
-
+                      onChange={(e) => setSelectedShipping(e.target.value)}
                     />
                     Entrega OCA a domicilio - $5,333.55
                   </label>
                 </div>
               </>
-            )}          </div>
+            )}
+          </div>
         </section>
 
         {/* Payment Methods */}
         <section className="mt-6">
           <h2 className="text-lg font-semibold">Pago</h2>
           <div className="space-y-2">
-            <div className="border border-gray-300 p-4 rounded">
+            <div className="rounded border border-gray-300 p-4">
               <label className="flex items-center">
-                <input type="radio" name="payment" className="mr-2" value="privado"
+                <input
+                  type="radio"
+                  name="payment"
+                  className="mr-2"
+                  value="privado"
                   checked={selectedPayment === "privado"}
                   onChange={(e) => {
                     setSelectedPayment(e.target.value);
@@ -225,9 +218,10 @@ const Checkout = (products:Product[]) => {
               </label>
               <p className="text-sm text-gray-500">IMPORTANTE! Pagas en efectivo el total al recibir el pedido. Únicamente ENVÍO PRIVADO</p>
             </div>
-            <div className="border border-gray-300 p-4 rounded">
+            <div className="rounded border border-gray-300 p-4">
               <label className="flex items-center">
-                <input type="radio"
+                <input
+                  type="radio"
                   name="payment"
                   value="mercadopago"
                   checked={selectedPayment === "mercadopago"}
@@ -245,7 +239,8 @@ const Checkout = (products:Product[]) => {
           <h2 className="text-lg font-semibold">Dirección de facturación</h2>
           <div>
             <label className="flex items-center">
-              <input type="radio"
+              <input
+                type="radio"
                 name="billing"
                 checked={!useDifferentBillingAddress}
                 onChange={() => setUseDifferentBillingAddress(false)}
@@ -253,8 +248,9 @@ const Checkout = (products:Product[]) => {
               />
               La misma dirección de envío
             </label>
-            <label className="flex items-center mt-2">
-              <input type="radio"
+            <label className="mt-2 flex items-center">
+              <input
+                type="radio"
                 name="billing"
                 checked={useDifferentBillingAddress}
                 onChange={() => setUseDifferentBillingAddress(true)}
@@ -265,14 +261,14 @@ const Checkout = (products:Product[]) => {
           </div>
 
           {useDifferentBillingAddress && (
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
               <input
                 type="text"
                 name="name"
                 value={billingAddress.name}
                 onChange={handleBillingInputChange}
                 placeholder="Nombre"
-                className="border border-gray-300 p-2 rounded"
+                className="rounded border border-gray-300 p-2"
               />
               <input
                 type="text"
@@ -280,7 +276,7 @@ const Checkout = (products:Product[]) => {
                 value={billingAddress.lastName}
                 onChange={handleBillingInputChange}
                 placeholder="Apellidos"
-                className="border border-gray-300 p-2 rounded"
+                className="rounded border border-gray-300 p-2"
               />
               <input
                 type="text"
@@ -288,7 +284,7 @@ const Checkout = (products:Product[]) => {
                 value={billingAddress.street}
                 onChange={handleBillingInputChange}
                 placeholder="Calle y Altura"
-                className="md:col-span-2 border border-gray-300 p-2 rounded"
+                className="rounded border border-gray-300 p-2 md:col-span-2"
               />
               <input
                 type="text"
@@ -296,7 +292,7 @@ const Checkout = (products:Product[]) => {
                 value={billingAddress.apartment}
                 onChange={handleBillingInputChange}
                 placeholder="Departamento, casa o indicación"
-                className="md:col-span-2 border border-gray-300 p-2 rounded"
+                className="rounded border border-gray-300 p-2 md:col-span-2"
               />
               <input
                 type="text"
@@ -304,22 +300,22 @@ const Checkout = (products:Product[]) => {
                 value={billingAddress.postalCode}
                 onChange={handleBillingInputChange}
                 placeholder="Código Postal"
-                className="border border-gray-300 p-2 rounded"
+                className="rounded border border-gray-300 p-2"
               />
               <input
                 type="text"
                 name="city"
-                value={billingAddress.city}
+                defaultValue={billingAddress.city}
                 placeholder="Ciudad"
-                className="border border-gray-300 p-2 rounded"
+                className="rounded border border-gray-300 p-2"
                 disabled
               />
               <input
                 type="text"
                 name="province"
-                value={billingAddress.province}
+                defaultValue={billingAddress.province}
                 placeholder="Provincia/Estado"
-                className="border border-gray-300 p-2 rounded"
+                className="rounded border border-gray-300 p-2"
                 disabled
               />
               <input
@@ -328,35 +324,74 @@ const Checkout = (products:Product[]) => {
                 value={billingAddress.phone}
                 onChange={handleBillingInputChange}
                 placeholder="Teléfono"
-                className="md:col-span-2 border border-gray-300 p-2 rounded"
+                className="rounded border border-gray-300 p-2 md:col-span-2"
               />
             </div>
           )}
+          <div className="mt-4">
+            <button
+              className="w-full rounded bg-green-600 py-3 font-semibold text-white shadow-lg transition-all duration-150 hover:bg-green-700"
+              onClick={() => {
+                // Add your purchase logic here
+                console.log("Compra realizada");
+              }}
+            >
+              Comprar Ahora
+            </button>
+          </div>
 
         </section>
+      </div>
 
-        {/* Order Summary */}
-        <section className="mt-8">
-          <h2 className="text-lg font-semibold">Resumen de la compra</h2>
-          <div className="bg-gray-50 p-4 rounded">
-            <div className="flex justify-between items-center">
-              <span>Remera Regular Fit - Negro</span>
-              <span>$4,700.00</span>
-            </div>
-            <div className="flex justify-between items-center mt-4">
-              <span>Subtotal</span>
-              <span>$4,700.00</span>
-            </div>
-            <div className="flex justify-between items-center mt-4">
-              <span>Métodos de envío</span>
-              <span>$2,500.00</span>
-            </div>
-            <div className="flex justify-between items-center font-bold mt-4">
-              <span>Total</span>
-              <span>$7,200.00</span>
+      {/* Cart Summary Section */}
+      <div className="mb-10 mt-6 w-full rounded bg-white p-6 shadow-md md:my-0 md:ml-4 md:w-2/5">
+        <h2 className="text-lg font-semibold">Resumen de la compra</h2>
+        {getCart().map((item, index) => (
+          <div key={index} className="border-b p-2">
+            <div className="flex flex-col justify-between md:flex-row md:items-center">
+              <div className="mb-2 flex-1 md:mb-0">
+                <p>{item.name} - {item.size}</p>
+                <p>Color: {item.color.toUpperCase()}</p>
+                <p>
+                  {item.quantity} x {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(item.price)}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-center space-x-4 md:justify-start">
+                {item.imageUrl && (
+                  <Image
+                    src={item.imageUrl}
+                    alt="Diseño Personalizado"
+                    width={100}
+                    height={100}
+                    className="rounded border"
+                  />
+                )}
+                {item.shirtImage && (
+                  <Image
+                    src={item.shirtImage}
+                    alt={`Remera de color ${item.color}`}
+                    width={100}
+                    height={100}
+                    className="rounded border"
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </section>
+        ))}
+
+        <div className="mt-4 border-t pt-4">
+          <p className="text-base text-gray-600">
+            Sub-Total: ARS {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(getTotalPrice())}
+          </p>
+          <p className="text-base text-gray-600">
+            Envio: ARS {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(selectedShippingCost)}
+          </p>
+          <h3 className="mt-2 text-lg font-semibold">
+            Total: ARS {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(getTotalPrice() + selectedShippingCost)}
+          </h3>
+        </div>
       </div>
     </div>
   );

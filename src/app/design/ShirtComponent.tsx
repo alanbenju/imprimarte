@@ -1,13 +1,14 @@
 import React, { useRef, useState } from "react";
 import { Stage, Layer, Image as KonvaImage, Transformer, Rect, Text } from "react-konva";
 import useImage from "use-image";
-import { UploadedFile } from "./types";
+import { ColorOption, Product, UploadedFile } from "./types";
 import Konva from "konva";
 
 export type ShirtComponentProps = {
-    selectedColor: string;
+    selectedColor: ColorOption;
     uploadedFile: UploadedFile;
     setUploadedFile: (file: UploadedFile) => void;
+    selectedProduct: Product
 }
 
 function adjustImageSize(fileW: number, fileH: number, rectWidth: number, rectHeight: number) {
@@ -24,11 +25,9 @@ function adjustImageSize(fileW: number, fileH: number, rectWidth: number, rectHe
 }
 
 const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtComponentProps) => {
-    const [tShirtImageBlack] = useImage("/regular-fit/remera-regular-black.png");
-    const [tShirtImageWhite] = useImage("/regular-fit/remera-regular-white.png");
     const [selectedImage] = useImage(uploadedFile.url || "");
 
-    const tShirtImage = selectedColor === "Negro" ? tShirtImageBlack : tShirtImageWhite;
+    const [tShirtImage] =  useImage(selectedColor.image)
 
     // Original shirt image dimensions and scaling
     const shirtWidth = 1267;
@@ -109,6 +108,8 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
         }
     });
 
+
+    console.log({stageWidth, stageHeight, rectW, rectH, width, height})
     return (
         <div className="max-w-2xl flex-1 p-8">
             <div className="rounded-lg border bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 p-4 shadow-lg">
@@ -132,7 +133,7 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
                             y={rectY}
                             width={rectW}
                             height={rectH}
-                            stroke={selectedColor === "Negro" ? "white" : "black"}
+                            stroke={selectedColor.color === "negro" ? "white" : "black"}
                             strokeWidth={2}
                             dash={[10, 5]}
                             ref={rectRef}  // Attach the ref here
@@ -142,14 +143,14 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
                             y={rectY - 20}
                             text={"30 cm"}
                             fontSize={16}
-                            fill={selectedColor === "Negro" ? "white" : "black"}
+                            fill={selectedColor.color === "negro" ? "white" : "black"}
                         />
                         <Text
                             x={rectX - 20}
                             y={rectY + rectH / 1.7 }
                             text={"42 cm"}
                             fontSize={16}
-                            fill={selectedColor === "Negro" ? "white" : "black"}
+                            fill={selectedColor.color === "negro" ? "white" : "black"}
                             rotation={-90}
                         />
                         {selectedImage && (
