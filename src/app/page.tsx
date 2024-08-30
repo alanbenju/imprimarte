@@ -20,25 +20,26 @@ export default function Component() {
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <a href="#" className="inline-flex items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-sm font-medium text-teal-900 hover:bg-amber-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                  <a href="/design" className="inline-flex items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-sm font-medium text-teal-900 hover:bg-amber-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                     Empezá a Diseñar
-                  </a>
-                  <a href="#" className="inline-flex items-center justify-center rounded-md border border-white px-4 py-2 text-sm font-medium text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                    Ver Productos
                   </a>
                 </div>
               </div>
-              <div className="flex items-center justify-center">
-                <div className="relative size-[300px] sm:size-[400px]">
-                  <div className="absolute inset-0 animate-pulse rounded-full bg-gradient-to-r from-emerald-400 to-teal-300"></div>
-                  <Image
-                    alt="Camiseta con diseño artístico"
-                    className="absolute inset-4 rounded-full object-cover"
-                    height={400}
-                    src="/placeholder.svg"
-                    width={400}
-                  />
-                </div>
+              <div className="flex items-center justify-center space-x-4">
+                <Image
+                  src="/remera-black-regular.png"
+                  alt="Black T-Shirt"
+                  width={250}
+                  height={250}
+                  className="rounded-lg shadow-md"
+                />
+                <Image
+                  src="/remera-white-regular.png"
+                  alt="White T-Shirt"
+                  width={250}
+                  height={250}
+                  className="rounded-lg shadow-md hidden md:block"
+                />
               </div>
             </div>
           </div>
@@ -89,19 +90,32 @@ export default function Component() {
                 <div className="flex flex-col items-center space-y-4 p-6">
                   <div className="relative h-64 w-full overflow-hidden rounded-lg">
                     <div className="animate-gradient absolute inset-0 bg-gradient-to-br from-teal-400 to-emerald-500"></div>
-                    <Image
-                      alt="Camiseta"
-                      className="absolute inset-0 size-full object-cover mix-blend-overlay"
-                      height={400}
-                      src="/placeholder.svg"
-                      width={320}
-                    />
+                    <div className="absolute inset-0">
+                      <Image
+                        alt="Oversize T-Shirt"
+                        className="absolute object-contain w-3/4 h-3/4 transform -translate-x-1/4 translate-y-1/4 rotate-[-5deg] z-30"
+                        src="/remera-oversize/cinnamon.png"
+                        layout="fill"
+                      />
+                      <Image
+                        alt="Canguro"
+                        className="absolute object-contain w-3/4 h-3/4 transform -translate-x-2/5 translate-y-1/4  z-30"
+                        src="/regular-fit/azul-francia.png"
+                        layout="fill"
+                      />
+                      <Image
+                        alt="Hoodie Oversize"
+                        className="absolute object-contain w-3/4 h-3/4 transform translate-x-1/4 translate-y-1/4 rotate-[5deg] z-40"
+                        src="/remera-oversize/topo.png"
+                        layout="fill"
+                      />
+                    </div>
                   </div>
                   <h3 className="text-2xl font-bold text-teal-800">Remeras</h3>
                   <p className="text-center text-gray-600">
                     Remeras en varios estilos y colores. El lienzo perfecto para tus diseños.
                   </p>
-                  <a href="#" className="inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                  <a href="/design" className="inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                     Personalizar Ahora
                   </a>
                 </div>
@@ -109,20 +123,33 @@ export default function Component() {
               <div className="rounded-lg bg-white shadow-lg transition-shadow hover:shadow-xl">
                 <div className="flex flex-col items-center space-y-4 p-6">
                   <div className="relative h-64 w-full overflow-hidden rounded-lg">
-                    <div className="animate-gradient absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-500"></div>
-                    <Image
-                      alt="Sudadera"
-                      className="absolute inset-0 size-full object-cover mix-blend-overlay"
-                      height={400}
-                      src="/placeholder.svg"
-                      width={320}
-                    />
+                    <div className="animate-gradient absolute inset-0 bg-gradient-to-br from-teal-400 to-emerald-500"></div>
+                    <div className="absolute inset-0">
+                      <Image
+                        alt="Hoodie Oversize"
+                        className="absolute object-contain w-3/4 h-3/4 transform -translate-x-1/4 translate-y-1/4 rotate-[-5deg] z-30"
+                        src="/hoodie-oversize/azul-francia.png"
+                        layout="fill"
+                      />
+                      <Image
+                        alt="Canguro"
+                        className="absolute object-contain w-3/4 h-3/4 transform -translate-x-2/5 translate-y-1/4 z-30"
+                        src="/canguro/bordo.png"
+                        layout="fill"
+                      />
+                      <Image
+                        alt="Hoodie Oversize"
+                        className="absolute object-contain w-3/4 h-3/4 transform translate-x-1/4 translate-y-1/4 rotate-[5deg] z-40"
+                        src="/canguro/suavidad-lila.png"
+                        layout="fill"
+                      />
+                    </div>
                   </div>
                   <h3 className="text-2xl font-bold text-teal-800">Buzos</h3>
                   <p className="text-center text-gray-600">
-                    buzos cómodos y con estilo que hacen que tus diseños resalten. Mantente abrigado y con tus diseños únicos.
+                    Buzos cómodos y con estilo que hacen que tus diseños resalten. Mantente abrigado y con tus diseños únicos.
                   </p>
-                  <a href="#" className="inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                  <a href="/design" className="inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                     Personalizar Ahora
                   </a>
                 </div>
@@ -141,11 +168,8 @@ export default function Component() {
                   Únete a miles de clientes satisfechos que han convertido su creatividad en arte para vestir.
                 </p>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <a href="#" className="inline-flex items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-sm font-medium text-teal-900 hover:bg-amber-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                  <a href="/design" className="inline-flex items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-sm font-medium text-teal-900 hover:bg-amber-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                     Empezá a Diseñar Ahora
-                  </a>
-                  <a href="#" className="inline-flex items-center justify-center rounded-md border border-white px-4 py-2 text-sm font-medium text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                    Saber Más
                   </a>
                 </div>
               </div>
