@@ -16,12 +16,12 @@ export default function Component() {
                     Tu Diseño, Tu Arte, Tu Estilo
                   </h1>
                   <p className="max-w-[600px] text-teal-100 md:text-xl">
-                    Sube tus diseños únicos y dales vida en camisetas y sudaderas premium. Rápido, fácil y totalmente tú.
+                    Subí tus diseños únicos y dales vida en camisetas y buzos premium. Rápido, fácil y totalmente tú.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <a href="#" className="inline-flex items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-sm font-medium text-teal-900 hover:bg-amber-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                    Empieza a Diseñar
+                    Empezá a Diseñar
                   </a>
                   <a href="#" className="inline-flex items-center justify-center rounded-md border border-white px-4 py-2 text-sm font-medium text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                     Ver Productos
@@ -55,7 +55,7 @@ export default function Component() {
                 </div>
                 <h3 className="text-xl font-bold text-gray-900">1. Sube Tu Diseño</h3>
                 <p className="text-gray-600">
-                  Simplemente sube tu obra de arte o usa nuestra herramienta de diseño fácil para crear tu obra maestra.
+                  Simplemente subí tu obra de arte.
                 </p>
               </div>
               <div className="flex flex-col items-center space-y-4 text-center">
@@ -64,7 +64,7 @@ export default function Component() {
                 </div>
                 <h3 className="text-xl font-bold text-gray-900">2. Elige Tu Producto</h3>
                 <p className="text-gray-600">
-                  Selecciona entre nuestra gama de camisetas y sudaderas de alta calidad en varios estilos y colores.
+                  Selecciona entre nuestra gama de remeras y buzos de calidad en varios estilos y colores.
                 </p>
               </div>
               <div className="flex flex-col items-center space-y-4 text-center">
@@ -97,9 +97,9 @@ export default function Component() {
                       width={320}
                     />
                   </div>
-                  <h3 className="text-2xl font-bold text-teal-800">Camisetas</h3>
+                  <h3 className="text-2xl font-bold text-teal-800">Remeras</h3>
                   <p className="text-center text-gray-600">
-                    Camisetas de algodón premium en varios estilos y colores. El lienzo perfecto para tus diseños.
+                    Remeras en varios estilos y colores. El lienzo perfecto para tus diseños.
                   </p>
                   <a href="#" className="inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                     Personalizar Ahora
@@ -118,9 +118,9 @@ export default function Component() {
                       width={320}
                     />
                   </div>
-                  <h3 className="text-2xl font-bold text-teal-800">Sudaderas</h3>
+                  <h3 className="text-2xl font-bold text-teal-800">Buzos</h3>
                   <p className="text-center text-gray-600">
-                    Sudaderas cómodas y con estilo que hacen que tus diseños resalten. Mantente abrigado y luce genial.
+                    buzos cómodos y con estilo que hacen que tus diseños resalten. Mantente abrigado y con tus diseños únicos.
                   </p>
                   <a href="#" className="inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                     Personalizar Ahora
@@ -142,7 +142,7 @@ export default function Component() {
                 </p>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <a href="#" className="inline-flex items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-sm font-medium text-teal-900 hover:bg-amber-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                    Empieza a Diseñar Ahora
+                    Empezá a Diseñar Ahora
                   </a>
                   <a href="#" className="inline-flex items-center justify-center rounded-md border border-white px-4 py-2 text-sm font-medium text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                     Saber Más
