@@ -109,7 +109,6 @@ const ShirtComponent = ({ selectedColor, uploadedFile, setUploadedFile }: ShirtC
     });
 
 
-    console.log({stageWidth, stageHeight, rectW, rectH, width, height})
     return (
         <div className="max-w-2xl flex-1 p-8">
             <div className="rounded-lg border bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 p-4 shadow-lg">

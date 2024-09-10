@@ -31,4 +31,5 @@ export interface Product {
             manga: string;
         };
     };
+    description: string;
 }

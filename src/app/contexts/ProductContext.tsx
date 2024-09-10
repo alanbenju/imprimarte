@@ -76,21 +76,22 @@ const sampleProducts: Product[] = [
             },
         ],
         type: "Regular Fit",
-        previewImage: "/regular-fit/black.png",
+        previewImage: "/prendas/remera-regular-fit/black.png",
         sizeDetails: {
             "S": { "ancho": "52-54", "largo": "65-67", "hombro": "41-43", "manga": "18-19" },
             "M": { "ancho": "54-56", "largo": "67-69", "hombro": "44-45", "manga": "19-20" },
             "L": { "ancho": "56-58", "largo": "69-70", "hombro": "45-46", "manga": "20-21" },
             "XL": { "ancho": "58-60", "largo": "70-71", "hombro": "46-47", "manga": "21-22" },
             "XXL": { "ancho": "60-61", "largo": "71-72", "hombro": "47-48", "manga": "22-23" }
-        }
+        },
+        description: "100% algodon jersey"
 
     },
     {
         id: "2",
         name: "Remera Oversize",
         price: 12000,
-        previewImage: "/remera-oversize/cinnamon.png",
+        previewImage: "/prendas/remera-oversize/cinnamon.png",
         colors: [
             {
                 color: "cinnamon",
@@ -149,14 +150,14 @@ const sampleProducts: Product[] = [
             "L": { "ancho": "57-58", "largo": "77-78", "hombro": "52-53", "manga": "24-25" },
             "XL": { "ancho": "59-60", "largo": "78-79", "hombro": "53-54", "manga": "24-25" },
             "XXL": { "ancho": "62-63", "largo": "79-80", "hombro": "56-57", "manga": "24-25" }
-        }
-
+        },
+        description: "100% algodon jersey"
     },
     {
         id: "3",
         name: "Canguro",
         price: 25000, // Adjust the price as needed
-        previewImage: "/canguro/bordo.png",
+        previewImage: "/prendas/canguro/bordo.png",
         colors: [
             {
                 color: "bordo",
@@ -187,7 +188,9 @@ const sampleProducts: Product[] = [
             "L": { "ancho": "57-59", "largo": "71-72", "hombro": "49-51", "manga": "60-61" },
             "XL": { "ancho": "59-61", "largo": "72-73", "hombro": "52-53", "manga": "61-62" },
             "XXL": { "ancho": "61-63", "largo": "73-74", "hombro": "53-55", "manga": "62-63" }
-        }
+        },
+        description: "100% algodon frisado"
+
         
     },
     {
@@ -218,7 +221,9 @@ const sampleProducts: Product[] = [
             "L": { "ancho": "63", "largo": "76", "hombro": "55", "manga": "69" },
             "XL": { "ancho": "65", "largo": "77", "hombro": "56", "manga": "70" },
             "XXL": { "ancho": "66", "largo": "78", "hombro": "57", "manga": "71" }
-        }
+        },
+        description: "100% algodon rustico sin frisa"
+
 
     }
 ];

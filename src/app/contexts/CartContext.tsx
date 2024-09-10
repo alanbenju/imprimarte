@@ -12,6 +12,7 @@ interface CartItem {
   productId: string;
   imageUrl: string;
   shirtImage: string;
+  shirtWithImageUrl: string;
 }
 
 interface CartContextType {

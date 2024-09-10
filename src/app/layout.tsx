@@ -10,7 +10,7 @@ import { ProductProvider } from "./contexts/ProductContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Imprimarte",
+  title: "customia",
   description: "Creá tus diseños personalizados",
 };
 
@@ -32,9 +32,9 @@ export default function RootLayout({
               </main>
               <footer className="mt-auto bg-gray-100">
                 <div className="container mx-auto flex items-center justify-between px-4 py-6 text-gray-600">
-                  <span>© 2024 Imprimarte. Todos los derechos reservados.</span>
-                  <a href="mailto:imprimarte@gmail.com" className="text-sm hover:underline">
-                  imprimarte@gmail.com
+                  <span>© 2024 customia. Todos los derechos reservados.</span>
+                  <a href="mailto:customia@gmail.com" className="text-sm hover:underline">
+                  customia@gmail.com
                   </a>
                 </div>
               </footer>

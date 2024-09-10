@@ -20,7 +20,7 @@ type ShirtInputsProps = {
     selectedProduct: Product;
     products: Product[];
     setProduct: (product: Product) => void;
-    addToCart: (item: any) => void
+    addToCart: (item: any) => Promise<void>
 };
 
 const ShirtInputsComponent: React.FC<ShirtInputsProps> = ({
@@ -38,13 +38,17 @@ const ShirtInputsComponent: React.FC<ShirtInputsProps> = ({
 }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const router = useRouter(); // Inicializa useRouter
+    const [isBouncing, setIsBouncing] = useState(false);
+
+    const router = useRouter();
 
 
     const openModal = () => setIsModalOpen(true)
     const closeModal = () => setIsModalOpen(false)
 
-    const handleAddToCart = async () => {
+    const handleAddToCart = async (e: any) => {
+        e.preventDefault();
+        setIsBouncing(true); // Trigger the animation
         await addToCart({
             color: selectedColor.color,
             quantity,
@@ -54,7 +58,10 @@ const ShirtInputsComponent: React.FC<ShirtInputsProps> = ({
             price: selectedProduct.price,
             size: selectedSize,
         });
+        setTimeout(() => setIsBouncing(false), 500); // Remove the animation after 0.5s
+
     };
+
 
     const handleAddToCartAndBuy = async () => {
         await addToCart({
@@ -96,10 +103,15 @@ const ShirtInputsComponent: React.FC<ShirtInputsProps> = ({
                             id="uploadFile1"
                             onChange={handleFileUpload}
                             className="hidden"
+                            accept=".png"
                         />
                         <p className="mt-2 text-xs font-medium text-gray-400">
-                            PNG, JPG, SVG, WEBP, and GIF are allowed.
+                            Solo PNG esta permitido.
                         </p>
+                        <p className="mt-2 text-xs font-medium text-gray-400">
+                            Recomendamos que tenga un DPI mayor a 300 para mejor calidad de imagen
+                        </p>
+
                     </label>
                 </div>
                 <div className="mb-6 w-full">
@@ -126,6 +138,7 @@ const ShirtInputsComponent: React.FC<ShirtInputsProps> = ({
                                 </div>
                             ))}
                         </div>
+                        <p>{selectedProduct.description}</p>
                     </div>
                 </div>
                 <div className="mb-6">
@@ -181,8 +194,12 @@ const ShirtInputsComponent: React.FC<ShirtInputsProps> = ({
 
 
                 <div className="mt-6 flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-                    <button className="flex flex-1 items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-teal-900 transition-colors hover:bg-amber-300">
-                        <ShoppingCart className="mr-2" onClick={handleAddToCart} />
+                    <button
+                        className={`flex flex-1 items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-teal-900 transition-colors hover:bg-amber-300 ${isBouncing ? "bounce" : ""
+                            }`}
+                        onClick={handleAddToCart}
+                    >
+                        <ShoppingCart className="mr-2" />
                         Agregar Al Carrito
                     </button>
                     <button

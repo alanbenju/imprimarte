@@ -50,16 +50,16 @@ export default function Component() {
               Cómo Funciona
             </h2>
             <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
-              <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="flex flex-col items-center space-y-4 text-center hover:shadow-lg transition-shadow duration-300 p-4">
                 <div className="rounded-full bg-teal-100 p-3">
                   <Upload className="size-8 text-teal-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">1. Sube Tu Diseño</h3>
+                <h3 className="text-xl font-bold text-gray-900">1. Subí Tu Diseño</h3>
                 <p className="text-gray-600">
                   Simplemente subí tu obra de arte.
                 </p>
               </div>
-              <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="flex flex-col items-center space-y-4 text-center hover:shadow-lg transition-shadow duration-300 p-4">
                 <div className="rounded-full bg-teal-100 p-3">
                   <Palette className="size-8 text-teal-600" />
                 </div>
@@ -68,7 +68,7 @@ export default function Component() {
                   Selecciona entre nuestra gama de remeras y buzos de calidad en varios estilos y colores.
                 </p>
               </div>
-              <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="flex flex-col items-center space-y-4 text-center hover:shadow-lg transition-shadow duration-300 p-4">
                 <div className="rounded-full bg-teal-100 p-3">
                   <Truck className="size-8 text-teal-600" />
                 </div>

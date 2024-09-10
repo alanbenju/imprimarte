@@ -21,15 +21,13 @@ export const Header = () => {
     }
   };
 
-  console.log(isMenuOpen)
-
   return (
     <header className="relative flex h-16 items-center bg-white px-4 shadow-md lg:px-6">
       <div className="container mx-auto max-w-7xl">
         <div className="flex items-center justify-between">
           <Link className="flex items-center justify-center" href="/">
             <ShoppingBag className="size-6 text-teal-600" />
-            <span className="ml-2 text-2xl font-bold text-teal-600">ImprimArte</span>
+            <span className="ml-2 text-2xl font-bold text-teal-600">Customia</span>
           </Link>
           <div className="flex items-center gap-4">
             {/* Desktop Navigation */}

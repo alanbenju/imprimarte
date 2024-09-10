@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { ColorOption, Product, UploadedFile } from "./types";
-import ShirtComponent from "./ShirtComponent";
 import ShirtInputs from "./ShirtInputs";
 import { ProductContext } from "../contexts/ProductContext";
 import { CartContext } from "../contexts/CartContext";
 import { v4 as uuidv4 } from "uuid";
-import Loader from "./Loader"; // Importa el componente Loader
+import Loader from "./Loader";
 import DesignComponent from "./components/DesignComponent";
+import Konva from "konva";
+import { Stage } from "konva/lib/Stage";
+import { uploadFile } from "./components/helpers/uploadFile";
 
 const initialUploadedFileData: UploadedFile = {
   url: "",
@@ -30,9 +32,12 @@ const DesignPage = () => {
   const [uploadedFileData, setUploadedFile] = useState<UploadedFile>(initialUploadedFileData);
   const [selectedColor, setSelectedColor] = useState<ColorOption>(product.colors[0]);
   const [selectedSize, setSelectedSize] = useState<string>(product.colors[0].availableSizes[0]);
-  const [quantity, setQuantity] = useState<number>(1);
   const [selectedProduct, setProduct] = useState<Product>(product);
+  const [quantity, setQuantity] = useState<number>(1);
   const [loading, setLoading] = useState(false); // Estado para manejar el loader
+  const stageref = useRef<Konva.Stage>(null);
+  const [stageRef, setStageRef] = useState<React.RefObject<Stage>>(stageref)
+  console.log({uploadedFileData})
 
 
   const [file, setFile] = useState<File | null>(null);
@@ -42,11 +47,13 @@ const DesignPage = () => {
     if (event.target.files) {
       const img = new Image();
       const selectedFile = event.target.files[0];
-      const url = URL.createObjectURL(event.target.files[0]);
+      const url = URL.createObjectURL(selectedFile);
 
       img.onload = () => {
         setUploadedFile({ ...uploadedFileData, width: img.width, height: img.height, url })
-        setFile(selectedFile); // Store the selected file for later use
+        console.log("Page.tsx")
+        console.log(uploadedFileData.x,uploadedFileData.y)
+        setFile(selectedFile);
       };
       img.src = url;
     }
@@ -66,54 +73,65 @@ const DesignPage = () => {
       return;
     }
 
-    setLoading(true); // Mostrar loader al iniciar la operación
-
+    setLoading(true);
 
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", file, uuidv4());
+
+    const shirtWithImageFormData = new FormData();
+    let blob;
+    if (stageRef.current) {
+      stageRef.current?.find("Transformer").forEach((transformer) => {
+        transformer.hide();
+      });
+      stageRef.current?.find("Rect").forEach((rect) => {
+        rect.hide();
+      });
+      stageRef.current?.find("Text").forEach((text) => {
+        text.hide();
+      });
+      const dataUrl = stageRef.current?.toDataURL();
+      blob = await (await fetch(dataUrl)).blob();
+      shirtWithImageFormData.append("file", blob, uuidv4());
+
+    }
 
     try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const [imageUrl, shirtWithImageUrl] = await Promise.all([uploadFile(formData), uploadFile(shirtWithImageFormData)])
+      addToCart({
+        id: uuidv4(),
+        name: selectedProduct.name,
+        color: selectedColor.color,
+        price: selectedProduct.price,
+        size: selectedSize,
+        quantity,
+        productId: selectedProduct.id,
+        imageUrl,
+        shirtImage: selectedColor.image,
+        shirtWithImageUrl
+      })
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log({ data });
-        const url = data.downloadURL;
-
-        addToCart({
-          id: uuidv4() as string,
-          name: selectedProduct.name,
-          color: selectedColor.color,
-          price: selectedProduct.price,
-          size: selectedSize,
-          quantity,
-          productId: selectedProduct.id,
-          imageUrl: url,
-          shirtImage: selectedColor.image
-        })
-
-        return Promise.resolve()
-
-        // Do something with the data
-      } else {
-        console.error("Upload failed:", response.status);
-      }
+      return Promise.resolve()
     } catch (error) {
       console.error("Error uploading file:", error);
     }
     finally {
+      stageRef.current?.find("Transformer").forEach((transformer) => {
+        transformer.show();
+      });
+      stageRef.current?.find("Rect").forEach((transformer) => {
+        transformer.show();
+      });
+      stageRef.current?.find("Text").forEach((transformer) => {
+        transformer.show();
+      });
       setLoading(false); // Ocultar loader después de completar la operación
     }
   };
 
-
-
   return (
     <div className="flex min-h-screen w-full flex-col md:flex-row bg-gradient-to-r from-teal-600 via-teal-500 to-emerald-500">
-      {loading && <Loader />} {/* Mostrar el loader si está cargando */}
+      {loading && <Loader />}
 
       <div className="w-full p-4 md:w-1/2 md:min-w-[500px]">
         <DesignComponent
@@ -121,6 +139,7 @@ const DesignPage = () => {
           uploadedFileData={uploadedFileData}
           setUploadedFile={setUploadedFile}
           selectedProduct={selectedProduct}
+          stageRef={stageRef}
         ></DesignComponent>
       </div>
 

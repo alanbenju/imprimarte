@@ -42,7 +42,6 @@ export default function Component() {
       answer: (
         <ul className="list-disc space-y-2 pl-5">
           <li><span className="font-medium">Cobertura:</span> Enviamos a CABA.</li>
-          <li><span className="font-medium">Envíos en el Día:</span> Comprando hasta las 7 de la mañana del día en curso.</li>
         </ul>
       )
     },
@@ -51,7 +50,6 @@ export default function Component() {
       answer: (
         <ul className="list-disc space-y-2 pl-5">
           <li><span className="font-medium">Métodos:</span> Mercado Pago, tarjetas de crédito y débito.</li>
-          <li><span className="font-medium">Acreditación:</span> 6 a 48 hs hábiles, con posibles demoras debido a procesamiento manual.</li>
         </ul>
       )
     },

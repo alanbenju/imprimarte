@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { Image as KonvaImage, Transformer } from "react-konva";
+import { Image as KonvaImage, Transformer, Text, Group } from "react-konva";
 import Konva from "konva";
 import useImage from "use-image";
 import { UploadedFile } from "../types";
@@ -25,60 +25,98 @@ const DraggableImage: React.FC<DraggableImageProps> = ({
     const imageRef = useRef<Konva.Image>(null);
     const trRef = useRef<Konva.Transformer>(null);
 
-    // Adjust image size to maintain aspect ratio and fit within the rectangle
     const adjustImageSize = () => {
-        if (!imageRef.current || !uploadedFileData) return;
+        console.log("adjust image size")
+        if (!selectedImage || !uploadedFileData) return;
 
-        let width = uploadedFileData.width;
-        let height = uploadedFileData.height;
+        let width = selectedImage.width;
+        let height = selectedImage.height;
 
+        // Calculate aspect ratio
+        const aspectRatio = width / height;
+
+        // Maximum allowed dimensions (in pixels)
+        const maxLongSide = (30 / 29) * rectWidth; // 30cm converted to pixels
+        const maxShortSide = (20 / 29) * rectWidth; // 20cm converted to pixels
+
+        // Adjust dimensions to fit within max allowed size while maintaining aspect ratio
+        if (width > height) {
+            // Landscape orientation
+            if (width > maxLongSide) {
+                width = maxLongSide;
+                height = width / aspectRatio;
+            }
+            if (height > maxShortSide) {
+                height = maxShortSide;
+                width = height * aspectRatio;
+            }
+        } else {
+            // Portrait orientation
+            if (height > maxLongSide) {
+                height = maxLongSide;
+                width = height * aspectRatio;
+            }
+            if (width > maxShortSide) {
+                width = maxShortSide;
+                height = width / aspectRatio;
+            }
+        }
+
+        // Scale to fit within the rectangle if necessary
         const widthScale = rectWidth / width;
         const heightScale = rectHeight / height;
-        const scaleFactor = Math.min(widthScale, heightScale);
+        const scaleFactor = Math.min(widthScale, heightScale, 1);
 
         width *= scaleFactor;
         height *= scaleFactor;
 
-        uploadedFileData.width = width
-        uploadedFileData.height = height
+        console.log("DraggableImage")
+        console.log(rectX + (rectWidth - width) / 2,rectY + (rectHeight - height) / 2)
+        setUploadedFile({
+            ...uploadedFileData,
+            width: width,
+            height: height,
+            x: rectX + (rectWidth - width) / 2,
+            y: rectY + (rectHeight - height) / 2,
+        });
     };
 
-    const resizeImage = (fileW: number, fileH: number) => {
-        if (fileW > rectWidth || fileH > rectHeight) {
-            const widthScale = rectWidth / fileW;
-            const heightScale = rectHeight / fileH;
-            const scaleFactor = Math.min(widthScale, heightScale);
-    
-            // Apply the scale factor
-            fileW *= scaleFactor;
-            fileH *= scaleFactor;
+    useEffect(() => {
+        console.log("Drag image useEffect 1")
+        if (selectedImage) {
+            adjustImageSize();
         }
-        return { width: fileW, height: fileH };    
-    }
-
-    const { width, height } = resizeImage(uploadedFileData.width, uploadedFileData.height);
-
+    }, [selectedImage, rectX]);
 
     useEffect(() => {
-        adjustImageSize();
+        console.log("Drag image: use effect")
         if (imageRef.current && trRef.current) {
             trRef.current.nodes([imageRef.current]);
             trRef.current.getLayer()?.batchDraw();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedImage, rectWidth, rectHeight]);
+    }, [uploadedFileData.width, uploadedFileData.height]);
 
+    const rectWidthCM = 29;
+    const rectHeightCM = rectHeight > rectWidth ? 42 : 25;
+    const imageWidthCM = (uploadedFileData.width * rectWidthCM / rectWidth).toFixed(2);
+    const imageHeightCM = (uploadedFileData.height * rectHeightCM / rectHeight).toFixed(2);
 
+    console.log("DRagable image",{
+        uploadedFileW: uploadedFileData.width,
+        UploadedFileH: uploadedFileData.height,
+        rectWidth,
+        rectHeight,
+        imageWidthCM,
+        imageHeightCM})
 
     return (
         <>
-
             <KonvaImage
                 image={selectedImage}
-                width={width}
-                height={height}
-                x={rectX}
-                y={rectY}
+                width={uploadedFileData.width}
+                height={uploadedFileData.height}
+                x={uploadedFileData.x}
+                y={uploadedFileData.y}
                 ref={imageRef}
                 draggable
                 onDragStart={() => setUploadedFile({ ...uploadedFileData, isDragging: true })}
@@ -101,10 +139,41 @@ const DraggableImage: React.FC<DraggableImageProps> = ({
                         const scaleX = node.scaleX();
                         const scaleY = node.scaleY();
 
-                        const newWidth = Math.max(5, node.width() * scaleX);
-                        const newHeight = Math.max(5, node.height() * scaleY);
+                        const rectWidthCM = 29;
+                        const rectHeightCM = rectHeight > rectWidth ? 42 : 25;
+                        const maxLongSideCM = 30;
+                        const maxShortSideCM = 20;
 
-                        console.log({newWidth, newHeight})
+                        let newWidth = Math.max(5, node.width() * scaleX);
+                        let newHeight = Math.max(5, node.height() * scaleY);
+
+                        const aspectRatio = newWidth / newHeight;
+
+                        let newWidthCM = (newWidth * rectWidthCM / rectWidth);
+                        let newHeightCM = (newHeight * rectHeightCM / rectHeight);
+
+                        if (newWidthCM > maxLongSideCM || newHeightCM > maxLongSideCM || 
+                            (newWidthCM > maxShortSideCM && newHeightCM > maxShortSideCM)) {
+                            if (newWidthCM > newHeightCM) {
+                                if (newWidthCM > maxLongSideCM) {
+                                    newWidth = (maxLongSideCM * rectWidth) / rectWidthCM;
+                                    newHeight = newWidth / aspectRatio;
+                                }
+                                if (newHeight > (maxShortSideCM * rectHeight) / rectHeightCM) {
+                                    newHeight = (maxShortSideCM * rectHeight) / rectHeightCM;
+                                    newWidth = newHeight * aspectRatio;
+                                }
+                            } else {
+                                if (newHeightCM > maxLongSideCM) {
+                                    newHeight = (maxLongSideCM * rectHeight) / rectHeightCM;
+                                    newWidth = newHeight * aspectRatio;
+                                }
+                                if (newWidth > (maxShortSideCM * rectWidth) / rectWidthCM) {
+                                    newWidth = (maxShortSideCM * rectWidth) / rectWidthCM;
+                                    newHeight = newWidth / aspectRatio;
+                                }
+                            }
+                        }
 
                         node.scaleX(1);
                         node.scaleY(1);
@@ -136,6 +205,23 @@ const DraggableImage: React.FC<DraggableImageProps> = ({
                         node.position({ x: newX, y: newY });
                     }
                 }}
+            />
+            <Text
+                text={`${imageWidthCM}cm`}
+                x={uploadedFileData.x + uploadedFileData.width / 2}
+                y={uploadedFileData.y + uploadedFileData.height + 5}
+                fontSize={12}
+                fill="white"
+                align="center"
+            />
+            <Text
+                text={`${imageHeightCM}cm`}
+                x={uploadedFileData.x - 5}
+                y={uploadedFileData.y + uploadedFileData.height / 2}
+                fontSize={12}
+                fill="white"
+                align="left"
+                rotation={-90}
             />
 
             <Transformer
