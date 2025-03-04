@@ -4,6 +4,9 @@ import React, { useState, useContext } from "react";
 import Image from "next/image";
 import { CartContext } from "@/app/contexts/CartContext";
 
+import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
+initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY as string);
+
 const Checkout = () => {
   const { getCart, getTotalPrice } = useContext(CartContext);
   const [contactEmail, setContactEmail] = useState("");
@@ -32,7 +35,8 @@ const Checkout = () => {
   const [selectedShipping, setSelectedShipping] = useState("privado");
   const [selectedPayment, setSelectedPayment] = useState("mercadopago");
   const [useDifferentBillingAddress, setUseDifferentBillingAddress] = useState(false);
-
+  const [loading, setLoading] = useState(false);
+  const [preference, setPreference] = useState(null);
   const handleBillingInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setBillingAddress((prev) => ({ ...prev, [name]: value }));
@@ -43,13 +47,44 @@ const Checkout = () => {
     setDeliveryAddress((prev) => ({ ...prev, [name]: value }));
   };
 
-  const shippingCostPrivado = 2500;
-  const shippingCostOca1 = 3464.31;
-  const shippingCostOca2 = 5333.55;
+  const handleCheckout = async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/create_preference", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: [
+            {
+              title: "T-shirt",
+              unit_price: 50,
+              quantity: 1,
+            },
+          ],
+          payer: {
+            email: "test@example.com", // Collect payer info dynamically
+          },
+        }),
+      });
+
+      const data = await response.json();
+      console.log({ data });
+      if (data.id) {
+        setPreference(data.id);
+      }
+    } catch (error) {
+      console.error("Error creating payment preference:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const shippingCostPrivado = 3500;
 
   let selectedShippingCost = selectedShipping == "privado" ? shippingCostPrivado : 0;
-  selectedShippingCost = selectedShipping == "oca1" ? shippingCostOca1 : selectedShippingCost;
-  selectedShippingCost = selectedShipping == "oca2" ? shippingCostOca2 : selectedShippingCost;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -159,9 +194,8 @@ const Checkout = () => {
                     checked={selectedShipping === "privado"}
                     onChange={(e) => setSelectedShipping(e.target.value)}
                   />
-                  Privado - $2,500.00
+                  Privado - $3,500.00
                 </label>
-                <p className="text-sm text-gray-500">Pagas en efectivo al recibir</p>
               </div>
               {selectedPayment !== "privado" && (
                 <>
@@ -172,10 +206,10 @@ const Checkout = () => {
                         name="shipping"
                         className="mr-2"
                         value="oca1"
-                        checked={selectedShipping === "oca1"}
+                        checked={selectedShipping === "caballito"}
                         onChange={(e) => setSelectedShipping(e.target.value)}
                       />
-                      Retirar en Agencia Oficial (OCA) - $3,464.31
+                      Retiro por Caballito
                     </label>
                   </div>
                   <div className="rounded border border-gray-300 p-4">
@@ -185,10 +219,10 @@ const Checkout = () => {
                         name="shipping"
                         className="mr-2"
                         value="oca2"
-                        checked={selectedShipping === "oca2"}
+                        checked={selectedShipping === "flores"}
                         onChange={(e) => setSelectedShipping(e.target.value)}
                       />
-                      Entrega OCA a domicilio - $5,333.55
+                      Retiro por Flores
                     </label>
                   </div>
                 </>
@@ -213,9 +247,8 @@ const Checkout = () => {
                       setSelectedShipping("privado");
                     }}
                   />
-                  Privado - Pago contra entrega
+                  Transferencia
                 </label>
-                <p className="text-sm text-gray-500">IMPORTANTE! Pagas en efectivo el total al recibir el pedido. Únicamente ENVÍO PRIVADO</p>
               </div>
               <div className="rounded border border-gray-300 p-4">
                 <label className="flex items-center">
@@ -234,7 +267,7 @@ const Checkout = () => {
           </section>
 
           {/* Billing Information */}
-          <section className="mb-6">
+          <section className="mb-6" hidden>
             <h2 className="mb-4 text-xl font-semibold">Dirección de facturación</h2>
             <div>
               <label className="flex items-center">
@@ -327,18 +360,15 @@ const Checkout = () => {
                 />
               </div>
             )}
-            <div className="mt-4">
-              <button
-                className="w-full rounded bg-green-600 py-3 font-semibold text-white shadow-lg transition-colors duration-150 hover:bg-green-700"
-                onClick={() => {
-                  // Add your purchase logic here
-                  console.log("Compra realizada");
-                }}
-              >
-                Comprar Ahora
-              </button>
-            </div>
           </section>
+          <div className="mt-4">
+            <button
+              className="w-full rounded bg-green-600 py-3 font-semibold text-white shadow-lg transition-colors duration-150 hover:bg-green-700"
+              onClick={handleCheckout}
+            >
+              Comprar Ahora
+            </button>
+          </div>
         </div>
 
         {/* Cart Summary Section */}
@@ -350,21 +380,10 @@ const Checkout = () => {
                 <div key={index} className="flex items-center space-x-4">
                   <div className="relative flex size-20 shrink-0">
                     {item.imageUrl && (
-                      <div className="relative size-10 overflow-hidden">
+                      <div className="relative size-20 overflow-hidden">
                         <Image
-                          src={item.imageUrl}
+                          src={item.shirtWithImageUrl}
                           alt={item.name}
-                          layout="fill"
-                          objectFit="cover"
-                          className="rounded-md"
-                        />
-                      </div>
-                    )}
-                    {item.shirtImage && (
-                      <div className="relative size-10 overflow-hidden">
-                        <Image
-                          src={item.shirtImage}
-                          alt="Diseño Personalizado"
                           layout="fill"
                           objectFit="cover"
                           className="rounded-md"
@@ -378,11 +397,17 @@ const Checkout = () => {
                       {item.size} - {item.color.toUpperCase()}
                     </p>
                     <p className="text-sm">
-                      {item.quantity} x {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(item.price)}
+                      {item.quantity} x{" "}
+                      {new Intl.NumberFormat("es-AR", {
+                        style: "currency",
+                        currency: "ARS",
+                      }).format(item.price)}
                     </p>
                   </div>
                   <div className="text-sm font-medium">
-                    {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(item.price * item.quantity)}
+                    {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(
+                      item.price * item.quantity
+                    )}
                   </div>
                 </div>
               ))}
@@ -390,22 +415,42 @@ const Checkout = () => {
             <div className="mt-6 space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Subtotal</span>
-                <span>{new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(getTotalPrice())}</span>
+                <span>
+                  {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(
+                    getTotalPrice()
+                  )}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>Envío</span>
-                <span>{new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(selectedShippingCost)}</span>
+                <span>
+                  {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(
+                    selectedShippingCost
+                  )}
+                </span>
               </div>
               <div className="mt-2 border-t pt-2">
                 <div className="flex justify-between text-lg font-semibold">
                   <span>Total</span>
-                  <span>{new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(getTotalPrice() + selectedShippingCost)}</span>
+                  <span>
+                    {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(
+                      getTotalPrice() + selectedShippingCost
+                    )}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      {preference && (
+        <div>
+          <Wallet
+            initialization={{ preferenceId: preference }}
+            customization={{ texts: { valueProp: "smart_option" } }}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -29,11 +29,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     setUserId(storedUserId);
   }, []);
 
-  return (
-    <UserContext.Provider value={{ userId }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ userId }}>{children}</UserContext.Provider>;
 };
 
 // Custom hook to use the UserContext

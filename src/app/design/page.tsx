@@ -19,29 +19,29 @@ const initialUploadedFileData: UploadedFile = {
   id: "1",
   x: 1,
   y: 1,
-  isDragging: false
-}
-
+  isDragging: false,
+};
 
 const DesignPage = () => {
-
-  const { getProductByType, getProducts } = useContext(ProductContext)
+  const { getProductByType, getProducts } = useContext(ProductContext);
   const products = getProducts();
-  const product = products[0]
+  // Make sure we have products before accessing the first one
+  const product = products && products.length > 0 ? products[0] : null;
 
   const [uploadedFileData, setUploadedFile] = useState<UploadedFile>(initialUploadedFileData);
-  const [selectedColor, setSelectedColor] = useState<ColorOption>(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState<string>(product.colors[0].availableSizes[0]);
-  const [selectedProduct, setProduct] = useState<Product>(product);
+  const [selectedColor, setSelectedColor] = useState<ColorOption>(
+    product ? product.colors[0] : { color: "", image: "", availableSizes: [], sizesImages: "", background: "" }
+  );
+  const [selectedSize, setSelectedSize] = useState<string>(
+    product && product.colors[0] ? product.colors[0].availableSizes[0] : ""
+  );
+  const [selectedProduct, setProduct] = useState<Product | null>(product);
   const [quantity, setQuantity] = useState<number>(1);
   const [loading, setLoading] = useState(false); // Estado para manejar el loader
   const stageref = useRef<Konva.Stage>(null);
-  const [stageRef, setStageRef] = useState<React.RefObject<Stage>>(stageref)
-  console.log({uploadedFileData})
-
+  const [stageRef, setStageRef] = useState<React.RefObject<Stage>>(stageref);
 
   const [file, setFile] = useState<File | null>(null);
-
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -50,9 +50,7 @@ const DesignPage = () => {
       const url = URL.createObjectURL(selectedFile);
 
       img.onload = () => {
-        setUploadedFile({ ...uploadedFileData, width: img.width, height: img.height, url })
-        console.log("Page.tsx")
-        console.log(uploadedFileData.x,uploadedFileData.y)
+        setUploadedFile({ ...uploadedFileData, width: img.width, height: img.height, url });
         setFile(selectedFile);
       };
       img.src = url;
@@ -60,16 +58,16 @@ const DesignPage = () => {
   };
 
   const setNewProduct = (product: Product) => {
-    setProduct(product)
-    setSelectedColor(product.colors[0])
-    setSelectedSize(product.colors[0].availableSizes[0])
-  }
+    setProduct(product);
+    setSelectedColor(product.colors[0]);
+    setSelectedSize(product.colors[0].availableSizes[0]);
+  };
 
   const { addToCart } = useContext(CartContext);
 
   const addItemToCart = async (): Promise<any> => {
-    if (!file) {
-      console.error("No file selected for upload");
+    if (!file || !selectedProduct) {
+      console.error("No file selected for upload or no product selected");
       return;
     }
 
@@ -93,11 +91,13 @@ const DesignPage = () => {
       const dataUrl = stageRef.current?.toDataURL();
       blob = await (await fetch(dataUrl)).blob();
       shirtWithImageFormData.append("file", blob, uuidv4());
-
     }
 
     try {
-      const [imageUrl, shirtWithImageUrl] = await Promise.all([uploadFile(formData), uploadFile(shirtWithImageFormData)])
+      const [imageUrl, shirtWithImageUrl] = await Promise.all([
+        uploadFile(formData),
+        uploadFile(shirtWithImageFormData),
+      ]);
       addToCart({
         id: uuidv4(),
         name: selectedProduct.name,
@@ -108,14 +108,13 @@ const DesignPage = () => {
         productId: selectedProduct.id,
         imageUrl,
         shirtImage: selectedColor.image,
-        shirtWithImageUrl
-      })
+        shirtWithImageUrl,
+      });
 
-      return Promise.resolve()
+      return Promise.resolve();
     } catch (error) {
       console.error("Error uploading file:", error);
-    }
-    finally {
+    } finally {
       stageRef.current?.find("Transformer").forEach((transformer) => {
         transformer.show();
       });
@@ -129,8 +128,20 @@ const DesignPage = () => {
     }
   };
 
+  // If products aren't loaded yet, show a loading state
+  if (!products || products.length === 0 || !selectedProduct) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-blue-900 to-blue-950">
+        <div className="text-center text-white">
+          <div className="mb-4 text-2xl font-bold">Cargando productos...</div>
+          <div className="mx-auto size-12 animate-spin rounded-full border-4 border-blue-300 border-t-transparent"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen w-full flex-col md:flex-row bg-gradient-to-r from-teal-600 via-teal-500 to-emerald-500">
+    <div className="flex min-h-screen w-full flex-col  md:flex-row">
       {loading && <Loader />}
 
       <div className="w-full p-4 md:w-1/2 md:min-w-[500px]">

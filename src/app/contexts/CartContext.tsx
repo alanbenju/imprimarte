@@ -103,9 +103,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   // Function to update the quantity of a cart item
   const updateCartItemQuantity = (id: string, quantity: number) => {
-    const updatedCart = cart.map((item) =>
-      item.id === id ? { ...item, quantity } : item
-    );
+    const updatedCart = cart.map((item) => (item.id === id ? { ...item, quantity } : item));
     setCart(updatedCart);
   };
 
