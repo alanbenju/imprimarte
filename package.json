@@ -23,6 +23,7 @@
     "@supabase/supabase-js": "^2.45.4",
     "axios": "^1.7.4",
     "canvas": "^2.11.2",
+    "embla-carousel-react": "^8.5.2",
     "firebase": "^10.13.0",
     "firebase-admin": "^12.4.0",
     "formidable": "^3.5.1",

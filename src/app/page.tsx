@@ -2,8 +2,36 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Store, Palette, ShoppingBag } from "lucide-react";
+import { ArrowRight, Store, Palette } from "lucide-react";
 import { motion } from "framer-motion";
+import { ProductCarousel } from "./components/ProductCarousel";
+
+// Define product image arrays
+const tshirtImages = [
+  "/prendas/remera-regular-fit/black.png",
+  "/prendas/remera-regular-fit/white.png",
+  "/prendas/remera-regular-fit/azul-francia.png",
+  "/prendas/remera-regular-fit/bossa-nova.png",
+  "/prendas/remera-regular-fit/cinnamon.png",
+  "/prendas/remera-regular-fit/marron-seta.png",
+  "/prendas/remera-regular-fit/pensamiento.png",
+  "/prendas/remera-regular-fit/petroleo.png",
+  "/prendas/remera-regular-fit/rosa-w.png",
+  "/prendas/remera-oversize/cinnamon.png",
+  "/prendas/remera-oversize/rojo.png",
+  "/prendas/remera-oversize/rosa.png",
+  "/prendas/remera-oversize/toffee.png",
+  "/prendas/remera-oversize/topo.png",
+  "/prendas/remera-oversize/verde-tanque.png",
+];
+
+const hoodieImages = [
+  "/prendas/canguro/bordo.png",
+  "/prendas/canguro/lead-gray.png",
+  "/prendas/canguro/suavidad-lila.png",
+  "/prendas/hoodie-oversize/azul-francia.png",
+  "/prendas/hoodie-oversize/negro.png",
+];
 
 export default function Component() {
   const [hoveredSection, setHoveredSection] = useState<"store" | "design" | null>(null);
@@ -36,13 +64,10 @@ export default function Component() {
           onMouseEnter={() => setHoveredSection("store")}
           onMouseLeave={() => setHoveredSection(null)}
         >
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 to-blue-950/95"></div>
-
           {/* Content Container */}
           <div className="relative z-10 mx-auto w-full max-w-xl py-8 md:py-0">
             <div className="flex flex-col items-center justify-center">
-              <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-blue-700/50 backdrop-blur-md">
+              <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-blue-700/50 ">
                 <Store className="size-10 text-white" />
               </div>
               <h1 className="font-heading mb-4 text-center text-3xl font-bold text-white md:text-4xl">
@@ -121,12 +146,12 @@ export default function Component() {
 
             {/* Floating elements for visual interest */}
             <div
-              className={`absolute left-1/4 top-1/4 size-20 rounded-full bg-blue-400/20 backdrop-blur-sm transition-opacity duration-500 ${
+              className={`absolute left-1/4 top-1/4 size-20 rounded-full bg-blue-400/20  transition-opacity duration-500 ${
                 hoveredSection === "store" ? "animate-float-slow opacity-100" : "opacity-50"
               }`}
             ></div>
             <div
-              className={`absolute bottom-1/3 right-1/4 size-32 rounded-full bg-blue-300/10 backdrop-blur-sm transition-opacity duration-500 ${
+              className={`absolute bottom-1/3 right-1/4 size-32 rounded-full bg-blue-300/10  transition-opacity duration-500 ${
                 hoveredSection === "store" ? "animate-float opacity-100" : "opacity-50"
               }`}
             ></div>
@@ -153,13 +178,11 @@ export default function Component() {
           onMouseEnter={() => setHoveredSection("design")}
           onMouseLeave={() => setHoveredSection(null)}
         >
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-red-900/80 to-red-950/90"></div>
 
           {/* Content Container */}
-          <div className="relative z-10 mx-auto w-full max-w-xl py-8 md:py-0">
+          <div className="relative z-10 mx-auto w-full max-w-2xl py-8 md:py-0">
             <div className="flex flex-col items-center justify-center">
-              <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-red-700/50 backdrop-blur-md">
+              <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-red-700/50 ">
                 <Palette className="size-10 text-white" />
               </div>
               <h2 className="font-heading mb-4 text-center text-3xl font-bold text-white md:text-4xl">
@@ -238,12 +261,12 @@ export default function Component() {
 
             {/* Floating elements for visual interest */}
             <div
-              className={`absolute right-1/4 top-1/3 size-24 rounded-full bg-red-400/20 backdrop-blur-sm transition-opacity duration-500 ${
+              className={`absolute right-1/4 top-1/3 size-24 rounded-full bg-red-400/20  transition-opacity duration-500 ${
                 hoveredSection === "design" ? "animate-float opacity-100" : "opacity-50"
               }`}
             ></div>
             <div
-              className={`absolute bottom-1/4 left-1/3 size-16 rounded-full bg-red-300/10 backdrop-blur-sm transition-opacity duration-500 ${
+              className={`absolute bottom-1/4 left-1/3 size-16 rounded-full bg-red-300/10  transition-opacity duration-500 ${
                 hoveredSection === "design" ? "animate-float-slow opacity-100" : "opacity-50"
               }`}
             ></div>
@@ -345,12 +368,10 @@ export default function Component() {
             online o comprar directamente.
           </p>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
             <div className="overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg">
               <div className="relative h-64 bg-gray-100">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <ShoppingBag className="size-24 text-blue-200" />
-                </div>
+                <ProductCarousel images={tshirtImages} productName="Remeras" />
               </div>
               <div className="p-6">
                 <h3 className="font-heading mb-2 text-xl font-bold text-blue-800">Remeras</h3>
@@ -369,9 +390,7 @@ export default function Component() {
 
             <div className="overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg">
               <div className="relative h-64 bg-gray-100">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <ShoppingBag className="size-24 text-blue-200" />
-                </div>
+                <ProductCarousel images={hoodieImages} productName="Buzos" />
               </div>
               <div className="p-6">
                 <h3 className="font-heading mb-2 text-xl font-bold text-blue-800">Buzos</h3>
@@ -383,26 +402,6 @@ export default function Component() {
                   className="font-medium text-blue-600 transition-colors hover:text-blue-800"
                 >
                   Diseñar buzo →
-                </Link>
-              </div>
-            </div>
-
-            <div className="overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg">
-              <div className="relative h-64 bg-gray-100">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <ShoppingBag className="size-24 text-blue-200" />
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="font-heading mb-2 text-xl font-bold text-blue-800">Accesorios</h3>
-                <p className="mb-4 text-blue-700">
-                  Complementa tu catálogo con accesorios personalizados como gorras, tazas y más.
-                </p>
-                <Link
-                  href="/design"
-                  className="font-medium text-blue-600 transition-colors hover:text-blue-800"
-                >
-                  Ver accesorios →
                 </Link>
               </div>
             </div>
