@@ -2,9 +2,9 @@
 
 import React, { useState, useContext } from "react";
 import Image from "next/image";
-import { CartContext } from "@/app/contexts/CartContext";
 
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
+import { CartContext } from "../contexts/CartContext";
 initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY as string);
 
 const Checkout = () => {

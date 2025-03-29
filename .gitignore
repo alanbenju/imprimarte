@@ -165,4 +165,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-*.service-account.json
+*/service-account.json
+src/app/api/storage/services/service-account.json
