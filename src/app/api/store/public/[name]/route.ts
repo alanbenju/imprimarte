@@ -3,27 +3,30 @@ import { CompanyStoreRepository } from "../../repositories/company-store.reposit
 import { StoreProductRepository } from "../../repositories/store-product.repository";
 import { getEM } from "@/app/api/database/connection";
 
-// GET - Get a public store by ID (no authentication required)
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { name: string } }
 ) {
   try {
-    const storeId = params.id;
+    const storeIdentifier = params.name;
     
     // Get the store
     const em = await getEM();
     const storeRepo = new CompanyStoreRepository(em);
     const productRepo = new StoreProductRepository(em);
+
+    const store = await storeRepo.findByName(storeIdentifier);
     
-    const store = await storeRepo.findById(storeId);
+    // Try to find by ID first, then by name if not found
+    console.log("store", store);
+    
     
     if (!store) {
       return NextResponse.json({ error: "Store not found" }, { status: 404 });
     }
     
     // Get products for the store
-    const products = await productRepo.findByCompanyStoreId(storeId);
+    const products = await productRepo.findByCompanyStoreId(store.id);
     
     // Return the store with its products
     return NextResponse.json({

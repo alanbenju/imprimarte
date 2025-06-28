@@ -1,0 +1,13 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+You need to have context about Customia.
+The idea behind this is similar to Printify, users will login and have a personal store.
+In their store they will be able to create products based on images, for example add images to a tshirt and put them on sale.
+Other users/clientes will find the seller page and buy that product.
+So sellers will have a:
+- my store page: where they will be able to manage their store, sales and products (and more)
+- the actual store: Where clientes will buy their products
+Also users/clients are able to create a tshirt and buy it for themselves.

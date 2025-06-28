@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Store, Palette } from "lucide-react";
-import { motion } from "framer-motion";
 import { ProductCarousel } from "./components/ProductCarousel";
 import Header from "./(design)/design/Header";
 import { CartDrawer } from "./(design)/cart/CartDrawer";
@@ -53,7 +52,7 @@ export default function Home() {
         {/* Hero Section with Split Design */}
         <section className="flex min-h-[calc(100vh-4rem)] w-full flex-col pt-16 md:flex-row md:pt-0">
           {/* Create Store Section */}
-          <motion.div
+          <div
             className={`relative flex items-center justify-center overflow-hidden px-6 py-16 transition-all duration-500 ease-in-out md:px-8 md:py-0 ${
               hoveredSection === "store"
                 ? "md:w-3/5"
@@ -161,13 +160,13 @@ export default function Home() {
                 }`}
               ></div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Separator */}
           <div className="hidden h-full w-[2px] bg-white/20 md:block"></div>
 
           {/* Design Section */}
-          <motion.div
+          <div
             className={`relative flex items-center justify-center overflow-hidden px-6 py-16 transition-all duration-500 ease-in-out md:px-8 md:py-0 ${
               hoveredSection === "design"
                 ? "md:w-3/5"
@@ -258,24 +257,24 @@ export default function Home() {
                         d="M5 13l4 4L19 7"
                       ></path>
                     </svg>
-                    <span>Envío a domicilio</span>
+                    <span>Envío rápido</span>
                   </div>
                 </div>
               </div>
 
               {/* Floating elements for visual interest */}
               <div
-                className={`absolute right-1/4 top-1/3 size-24 rounded-full bg-red-400/20 transition-opacity duration-500 ${
-                  hoveredSection === "design" ? "animate-float opacity-100" : "opacity-50"
-                }`}
-              ></div>
-              <div
-                className={`absolute bottom-1/4 left-1/3 size-16 rounded-full bg-red-300/10 transition-opacity duration-500 ${
+                className={`absolute left-1/4 top-1/4 size-20 rounded-full bg-red-400/20 transition-opacity duration-500 ${
                   hoveredSection === "design" ? "animate-float-slow opacity-100" : "opacity-50"
                 }`}
               ></div>
+              <div
+                className={`absolute bottom-1/3 right-1/4 size-32 rounded-full bg-red-300/10 transition-opacity duration-500 ${
+                  hoveredSection === "design" ? "animate-float opacity-100" : "opacity-50"
+                }`}
+              ></div>
             </div>
-          </motion.div>
+          </div>
         </section>
 
         {/* Store Information Section */}

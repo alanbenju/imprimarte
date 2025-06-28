@@ -5,6 +5,7 @@ import { User } from "../../users/entities/user.entity";
 
 export interface ICompanyStoreRepository extends IBaseRepository<CompanyStore> {
   findByUserId(userId: string): Promise<CompanyStore[]>;
+  findByName(name: string): Promise<CompanyStore | null>;
 }
 
 export class CompanyStoreRepository implements ICompanyStoreRepository {
@@ -29,6 +30,10 @@ export class CompanyStoreRepository implements ICompanyStoreRepository {
 
   async findById(id: string): Promise<CompanyStore | null> {
     return this.em.findOne(CompanyStore, { id });
+  }
+
+  async findByName(name: string): Promise<CompanyStore | null> {
+    return this.em.findOne(CompanyStore, { name });
   }
 
   async findByUserId(userId: string): Promise<CompanyStore[]> {

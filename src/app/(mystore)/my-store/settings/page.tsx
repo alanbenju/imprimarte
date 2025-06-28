@@ -2,15 +2,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FiSave, FiUpload, FiShoppingBag, FiMenu } from "react-icons/fi";
+import { FiSave, FiUpload, FiShoppingBag, FiMenu, FiAlertCircle, FiExternalLink, FiSmartphone, FiMonitor } from "react-icons/fi";
 import { storeService, StoreDetails, UpdateStoreParams } from "@/services/store.service";
+import Link from "next/link";
 
 export default function StoreSettings() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
   const [store, setStore] = useState<StoreDetails | null>(null);
+  const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
   const [formData, setFormData] = useState<UpdateStoreParams>({
     name: "",
     colorPanel: "#0077FF", // Left sidebar color
@@ -61,13 +64,44 @@ export default function StoreSettings() {
     }
   }
 
+  const validateStoreName = (name: string): boolean => {
+    // Allow only alphanumeric characters, hyphens, and underscores
+    const urlFriendlyRegex = /^[a-zA-Z0-9-_]+$/;
+    const isValid = urlFriendlyRegex.test(name);
+    
+    if (!isValid) {
+      setNameError("El nombre solo puede contener letras, números, guiones y guiones bajos (sin espacios ni caracteres especiales)");
+    } else {
+      setNameError(null);
+    }
+    
+    return isValid;
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value
-    }));
+    if (name === "name") {
+      // Convert spaces to hyphens for URL-friendly names
+      const processedValue = value.replace(/\s+/g, "-");
+      
+      setFormData(prev => ({
+        ...prev,
+        [name]: processedValue
+      }));
+      
+      // Validate the store name
+      if (processedValue) {
+        validateStoreName(processedValue);
+      } else {
+        setNameError(null);
+      }
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value
+      }));
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,6 +124,11 @@ export default function StoreSettings() {
     e.preventDefault();
     
     if (!store) return;
+    
+    // Validate store name before submitting
+    if (!formData.name || !validateStoreName(formData.name)) {
+      return;
+    }
     
     setIsSaving(true);
     setSuccessMessage(null);
@@ -134,9 +173,22 @@ export default function StoreSettings() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800">Configuración de la Tienda</h1>
-        <p className="text-gray-600">Personaliza la apariencia y detalles de tu tienda</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Configuración de la Tienda</h1>
+          <p className="text-gray-600">Personaliza la apariencia y detalles de tu tienda</p>
+        </div>
+        
+        {store && (
+          <Link 
+            href={`/store/${formData.name}`} 
+            target="_blank"
+            className="mt-4 inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0"
+          >
+            <FiExternalLink className="mr-2" />
+            Ver mi tienda
+          </Link>
+        )}
       </div>
       
       {successMessage && (
@@ -167,9 +219,18 @@ export default function StoreSettings() {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className={`w-full rounded-md border ${nameError ? "border-red-500 bg-red-50" : "border-gray-300"} px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                 required
               />
+              {nameError && (
+                <div className="mt-1 flex items-center text-sm text-red-600">
+                  <FiAlertCircle className="mr-1" />
+                  <span>{nameError}</span>
+                </div>
+              )}
+              <p className="mt-1 text-xs text-gray-500">
+                Este nombre se usará en la URL de tu tienda (ejemplo: tutienda.dominio.com)
+              </p>
             </div>
             
             <div className="flex items-center space-x-2">
@@ -370,99 +431,222 @@ export default function StoreSettings() {
             </div>
             
             <div className="relative rounded-md bg-gray-50 p-4">
-              <h3 className="mb-4 text-sm font-medium text-gray-700">Vista Previa</h3>
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-sm font-medium text-gray-700">Vista Previa</h3>
+                <div className="flex rounded-md border border-gray-300 bg-white">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewMode("desktop")}
+                    className={`flex items-center px-3 py-1.5 text-sm ${
+                      previewMode === "desktop" 
+                        ? "bg-blue-50 text-blue-600" 
+                        : "text-gray-600"
+                    }`}
+                  >
+                    <FiMonitor className="mr-1.5" />
+                    Escritorio
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewMode("mobile")}
+                    className={`flex items-center px-3 py-1.5 text-sm ${
+                      previewMode === "mobile" 
+                        ? "bg-blue-50 text-blue-600" 
+                        : "text-gray-600"
+                    }`}
+                  >
+                    <FiSmartphone className="mr-1.5" />
+                    Móvil
+                  </button>
+                </div>
+              </div>
               
               {/* Store Preview */}
-              <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
-                {/* Header */}
-                <div className="flex items-center justify-between border-b border-gray-200 bg-white p-3">
-                  <div className="text-sm font-medium text-gray-600">Customia</div>
-                  <div className="flex items-center space-x-2">
-                    {logoPreview ? (
-                      <img src={logoPreview} alt="Logo" className="size-6 rounded-full object-cover" />
-                    ) : (
-                      <div className="size-6 rounded-full bg-gray-200"></div>
-                    )}
-                    {formData.showStoreName && (
-                      <span className="text-sm font-medium">{formData.name || "Mi Tienda"}</span>
-                    )}
-                  </div>
-                  <div className="text-sm text-gray-600"><FiShoppingBag size={16} /></div>
-                </div>
-                
-                {/* Banner */}
-                <div className="h-24 w-full bg-gray-200">
-                  {bannerPreview ? (
-                    <img src={bannerPreview} alt="Banner" className="size-full object-cover" />
-                  ) : (
-                    <div className="flex size-full items-center justify-center text-sm text-gray-500">
-                      Banner de la tienda
+              {previewMode === "desktop" ? (
+                // Desktop Preview
+                <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
+                  {/* Header */}
+                  <div className="flex items-center justify-between border-b border-gray-200 bg-white p-3">
+                    <div className="text-sm font-medium text-gray-600">Customia</div>
+                    <div className="flex items-center space-x-2">
+                      {logoPreview ? (
+                        <img src={logoPreview} alt="Logo" className="size-6 rounded-full object-cover" />
+                      ) : (
+                        <div className="size-6 rounded-full bg-gray-200"></div>
+                      )}
+                      {formData.showStoreName && (
+                        <span className="text-sm font-medium">{formData.name || "Mi Tienda"}</span>
+                      )}
                     </div>
-                  )}
-                </div>
-                
-                {/* Store Content */}
-                <div className="flex">
-                  {/* Left Panel - Categories */}
-                  <div className="w-1/4 p-3" style={{ backgroundColor: formData.colorPanel }}>
-                    <h4 className="mb-2 text-xs font-medium" style={{ color: formData.colorText }}>
-                      CATEGORÍAS
-                    </h4>
-                    <ul className="space-y-2">
-                      <li className="text-xs" style={{ color: formData.colorText }}>Remera Oversize</li>
-                      <li className="text-xs" style={{ color: formData.colorText }}>Remera Regular Fit</li>
-                      <li className="text-xs" style={{ color: formData.colorText }}>Buzos</li>
-                      <li className="text-xs" style={{ color: formData.colorText }}>Tazas</li>
-                    </ul>
+                    <div className="text-sm text-gray-600"><FiShoppingBag size={16} /></div>
                   </div>
                   
-                  {/* Right Panel - Products */}
-                  <div 
-                    className="flex-1 p-3" 
-                    style={{ backgroundColor: formData.backgroundColor }}
-                  >
+                  {/* Banner */}
+                  <div className="h-24 w-full bg-gray-200">
+                    {bannerPreview ? (
+                      <img src={bannerPreview} alt="Banner" className="size-full object-cover" />
+                    ) : (
+                      <div className="flex size-full items-center justify-center text-sm text-gray-500">
+                        Banner de la tienda
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Store Content */}
+                  <div className="flex">
+                    {/* Left Panel - Categories */}
+                    <div className="w-1/4 p-3" style={{ backgroundColor: formData.colorPanel }}>
+                      <h4 className="mb-2 text-xs font-medium" style={{ color: formData.colorText }}>
+                        CATEGORÍAS
+                      </h4>
+                      <ul className="space-y-2">
+                        <li className="text-xs" style={{ color: formData.colorText }}>Remera Oversize</li>
+                        <li className="text-xs" style={{ color: formData.colorText }}>Remera Regular Fit</li>
+                        <li className="text-xs" style={{ color: formData.colorText }}>Buzos</li>
+                        <li className="text-xs" style={{ color: formData.colorText }}>Tazas</li>
+                      </ul>
+                    </div>
+                    
+                    {/* Right Panel - Products */}
+                    <div 
+                      className="flex-1 p-3" 
+                      style={{ backgroundColor: formData.backgroundColor }}
+                    >
+                      <h4 className="mb-3 text-sm font-medium" style={{ color: formData.productTextColor }}>
+                        Productos Destacados
+                      </h4>
+                      
+                      <div className="grid grid-cols-2 gap-2">
+                        {/* Product 1 */}
+                        <div className="rounded bg-white p-2 shadow-sm">
+                          <div className="mb-2 h-16 w-full bg-gray-200"></div>
+                          <p className="text-xs font-medium" style={{ color: formData.productTextColor }}>
+                            Producto Ejemplo
+                          </p>
+                          <div className="mt-1 flex items-center justify-between">
+                            <p className="text-xs" style={{ color: formData.productTextColor }}>$24.99</p>
+                            <button 
+                              className="rounded px-2 py-1 text-xs text-white" 
+                              style={{ backgroundColor: formData.buyButtonColor }}
+                            >
+                              Comprar
+                            </button>
+                          </div>
+                        </div>
+                        
+                        {/* Product 2 */}
+                        <div className="rounded bg-white p-2 shadow-sm">
+                          <div className="mb-2 h-16 w-full bg-gray-200"></div>
+                          <p className="text-xs font-medium" style={{ color: formData.productTextColor }}>
+                            Producto Ejemplo
+                          </p>
+                          <div className="mt-1 flex items-center justify-between">
+                            <p className="text-xs" style={{ color: formData.productTextColor }}>$34.99</p>
+                            <button 
+                              className="rounded px-2 py-1 text-xs text-white" 
+                              style={{ backgroundColor: formData.buyButtonColor }}
+                            >
+                              Comprar
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // Mobile Preview
+                <div className="mx-auto w-[320px] overflow-hidden rounded-[36px] border-[8px] border-gray-800 bg-white shadow-lg">
+                  {/* Mobile Header with menu icon */}
+                  <div className="flex items-center justify-between border-b border-gray-200 bg-white p-3">
+                    <FiMenu className="text-gray-600" />
+                    
+                    <div className="flex items-center space-x-2">
+                      {logoPreview ? (
+                        <img src={logoPreview} alt="Logo" className="size-6 rounded-full object-cover" />
+                      ) : (
+                        <div className="size-6 rounded-full bg-gray-200"></div>
+                      )}
+                      {formData.showStoreName && (
+                        <span className="text-sm font-medium">{formData.name || "Mi Tienda"}</span>
+                      )}
+                    </div>
+                    
+                    <div className="text-sm text-gray-600"><FiShoppingBag size={16} /></div>
+                  </div>
+                  
+                  {/* Banner */}
+                  <div className="h-24 w-full bg-gray-200">
+                    {bannerPreview ? (
+                      <img src={bannerPreview} alt="Banner" className="size-full object-cover" />
+                    ) : (
+                      <div className="flex size-full items-center justify-center text-sm text-gray-500">
+                        Banner
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Mobile content */}
+                  <div style={{ backgroundColor: formData.backgroundColor }} className="p-3">
                     <h4 className="mb-3 text-sm font-medium" style={{ color: formData.productTextColor }}>
                       Productos Destacados
                     </h4>
                     
-                    <div className="grid grid-cols-2 gap-2">
-                      {/* Product 1 */}
+                    <div className="space-y-3">
+                      {/* Mobile Product 1 */}
                       <div className="rounded bg-white p-2 shadow-sm">
-                        <div className="mb-2 h-16 w-full bg-gray-200"></div>
-                        <p className="text-xs font-medium" style={{ color: formData.productTextColor }}>
-                          Producto Ejemplo
-                        </p>
-                        <div className="mt-1 flex items-center justify-between">
-                          <p className="text-xs" style={{ color: formData.productTextColor }}>$24.99</p>
-                          <button 
-                            className="rounded px-2 py-1 text-xs text-white" 
-                            style={{ backgroundColor: formData.buyButtonColor }}
-                          >
-                            Comprar
-                          </button>
+                        <div className="flex">
+                          <div className="mr-2 size-14 flex-shrink-0 bg-gray-200"></div>
+                          <div className="flex-1">
+                            <p className="text-xs font-medium" style={{ color: formData.productTextColor }}>
+                              Producto Ejemplo
+                            </p>
+                            <p className="mt-1 text-xs" style={{ color: formData.productTextColor }}>$24.99</p>
+                            <button 
+                              className="mt-1 rounded px-2 py-0.5 text-xs text-white" 
+                              style={{ backgroundColor: formData.buyButtonColor }}
+                            >
+                              Comprar
+                            </button>
+                          </div>
                         </div>
                       </div>
                       
-                      {/* Product 2 */}
+                      {/* Mobile Product 2 */}
                       <div className="rounded bg-white p-2 shadow-sm">
-                        <div className="mb-2 h-16 w-full bg-gray-200"></div>
-                        <p className="text-xs font-medium" style={{ color: formData.productTextColor }}>
-                          Producto Ejemplo
-                        </p>
-                        <div className="mt-1 flex items-center justify-between">
-                          <p className="text-xs" style={{ color: formData.productTextColor }}>$34.99</p>
-                          <button 
-                            className="rounded px-2 py-1 text-xs text-white" 
-                            style={{ backgroundColor: formData.buyButtonColor }}
-                          >
-                            Comprar
-                          </button>
+                        <div className="flex">
+                          <div className="mr-2 size-14 flex-shrink-0 bg-gray-200"></div>
+                          <div className="flex-1">
+                            <p className="text-xs font-medium" style={{ color: formData.productTextColor }}>
+                              Producto Ejemplo
+                            </p>
+                            <p className="mt-1 text-xs" style={{ color: formData.productTextColor }}>$34.99</p>
+                            <button 
+                              className="mt-1 rounded px-2 py-0.5 text-xs text-white" 
+                              style={{ backgroundColor: formData.buyButtonColor }}
+                            >
+                              Comprar
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
+                    
+                    {/* Mobile Categories */}
+                    <div className="mt-4 rounded" style={{ backgroundColor: formData.colorPanel }}>
+                      <h4 className="mb-2 p-2 text-xs font-medium" style={{ color: formData.colorText }}>
+                        CATEGORÍAS
+                      </h4>
+                      <ul className="space-y-2 p-2">
+                        <li className="text-xs" style={{ color: formData.colorText }}>Remera Oversize</li>
+                        <li className="text-xs" style={{ color: formData.colorText }}>Remera Regular Fit</li>
+                        <li className="text-xs" style={{ color: formData.colorText }}>Buzos</li>
+                        <li className="text-xs" style={{ color: formData.colorText }}>Tazas</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -470,7 +654,7 @@ export default function StoreSettings() {
         <div className="flex justify-end">
           <button
             type="submit"
-            disabled={isSaving}
+            disabled={isSaving || !!nameError}
             className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-75"
           >
             {isSaving ? (

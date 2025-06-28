@@ -1,4 +1,5 @@
 import api from "./api";
+import publicApi from "./public-api";
 
 export interface StoreDetails {
   id: string;
@@ -67,6 +68,11 @@ export const storeService = {
   // Get current user's store
   async getMyStore(): Promise<StoreDetails> {
     const response = await api.get<StoreDetails>("/store/me");
+    return response.data;
+  },
+
+  async getStore(storeName: string): Promise<StoreDetails> {
+    const response = await api.get<StoreDetails>(`/store/public/${storeName}`);
     return response.data;
   },
   

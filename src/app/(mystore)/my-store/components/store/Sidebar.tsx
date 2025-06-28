@@ -4,7 +4,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 import { 
   FiHome, 
   FiShoppingBag, 
@@ -75,16 +74,14 @@ export default function Sidebar() {
       
       {/* Mobile sidebar */}
       {isMobileMenuOpen && (
-        <motion.div
-          initial={{ x: -280 }}
-          animate={{ x: 0 }}
-          exit={{ x: -280 }}
-          className="fixed inset-0 z-30 bg-black bg-opacity-50 md:hidden"
+        <div
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm transition-opacity duration-300 md:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <div 
-            className="h-full w-[280px] bg-white pt-16" 
+            className="h-full w-[280px] bg-white pt-16 transition-transform duration-300 ease-out" 
             onClick={(e) => e.stopPropagation()}
+            style={{ transform: isMobileMenuOpen ? "translateX(0)" : "translateX(-100%)" }}
           >
             <div className="flex h-full flex-col justify-between">
               <div>
@@ -108,7 +105,7 @@ export default function Sidebar() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
       
       {/* Desktop sidebar */}
